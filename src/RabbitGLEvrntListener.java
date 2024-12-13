@@ -1,3 +1,4 @@
+import Models.UserModel;
 import Texture.TextureReader;
 import states.GameState;
 import states.PlayState;
@@ -5,12 +6,18 @@ import states.PlayState;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.glu.GLU;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 public class RabbitGLEvrntListener extends RabbitListener {
+    public static final int MAX_WIDTH = 100, MAX_HEIGHT = 100; // set max height and width to translate sprites using integers
+    int xclicked = 200;
+    int yclicked = 200;
+    int xmotion=0  , ymotion =0;
     GameState gameState;
     PlayState playState;
+    UserModel userModel;
     String[] textureNames= new String[]{"rabbit2.png", "Hammer.png", "Hole.png", "Boom.png", "Hit.png", "Back.jpeg", "play.png",
             "exit.png", "soundOn.png", "soundOff.png", "easy.png", "medium.png", "hard.png", "backbtn.png", "hammer3.png",
             "HowToPlay.png", "playAgain.png", "home.png", "restart.png", "resume.png", "Back1.png", "Hamme2r.png", "Hamer3.png",
@@ -38,6 +45,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
         }
          gameState = new GameState();
          playState = new PlayState();
+
     }
 
     @Override
@@ -47,7 +55,11 @@ public class RabbitGLEvrntListener extends RabbitListener {
         gl.glLoadIdentity();
         DrawBackground(gl);
         switch (gameState.getGameState()) {
-            case "start":
+            case "start":{
+                gameState.setInstruction();
+                userModel = new UserModel("as",0);
+
+            }
                 break;
 
             case "instruction":
@@ -109,8 +121,49 @@ public class RabbitGLEvrntListener extends RabbitListener {
     }
     @Override
     public void mouseClicked(MouseEvent e) {
+        double x = e.getX();
+        double y = e.getY();
+        Component c = e.getComponent();
+        double width = c.getWidth();
+        double height = c.getHeight();
+        xclicked = (int)(x / width * 100.0);
+        yclicked = (int)(y / height * 100.0);
+        yclicked = 100 - yclicked;
+        switch (gameState.getGameState()) {
+            case "start":{
 
+            }
+            break;
+
+            case "instruction":
+
+                break;
+
+            case "chooseMode":
+
+                break;
+
+            case "chooseNumberOfPlayers":
+
+                break;
+
+            case "startPlay": {
+                if (playState.isLose) {
+
+                } else if (playState.isPaused) {
+
+                } else {
+
+                }
+            }
+            break;
+
+            default:
+                System.out.println("Unknown state.");
+                break;
+        }
     }
+
 
     @Override
     public void mousePressed(MouseEvent e) {
@@ -136,10 +189,17 @@ public class RabbitGLEvrntListener extends RabbitListener {
     public void mouseDragged(MouseEvent e) {
 
     }
+    public double convertX(double x , double width) {
+        return (x /width * 100);
+    }
+    public double convertY(double y , double height) {
+        return (100-y / height * 100);
+    }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
+        xmotion= (int)convertX(e.getX() , e.getComponent().getWidth());
+        ymotion= (int)convertY(e.getY() , e.getComponent().getHeight());
     }
 
 
