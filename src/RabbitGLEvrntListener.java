@@ -1,4 +1,6 @@
 import Texture.TextureReader;
+import states.GameState;
+import states.PlayState;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
@@ -7,6 +9,8 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 public class RabbitGLEvrntListener extends RabbitListener {
+    GameState gameState;
+    PlayState playState;
     String[] textureNames= new String[]{"rabbit2.png", "Hammer.png", "Hole.png", "Boom.png", "Hit.png", "Back.jpeg", "play.png",
             "exit.png", "soundOn.png", "soundOff.png", "easy.png", "medium.png", "hard.png", "backbtn.png", "hammer3.png",
             "HowToPlay.png", "playAgain.png", "home.png", "restart.png", "resume.png", "Back1.png", "Hamme2r.png", "Hamer3.png",
@@ -32,6 +36,8 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 var5.printStackTrace();
             }
         }
+         gameState = new GameState();
+         playState = new PlayState();
     }
 
     @Override
@@ -40,6 +46,40 @@ public class RabbitGLEvrntListener extends RabbitListener {
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
         DrawBackground(gl);
+        switch (gameState.getGameState()) {
+            case "start":
+                break;
+
+            case "instruction":
+
+                break;
+
+            case "chooseMode":
+
+                break;
+
+            case "chooseNumberOfPlayers":
+
+                break;
+
+        case "startPlay": {
+            if (playState.isLose) {
+
+            } else if (playState.isPaused) {
+
+            } else {
+
+            }
+        }
+                break;
+
+            default:
+                System.out.println("Unknown state.");
+                break;
+        }
+
+
+
     }
     public void DrawBackground(GL gl) {
         gl.glEnable(GL.GL_BLEND);
