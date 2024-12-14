@@ -50,9 +50,25 @@ public class RabbitGLEvrntListener extends RabbitListener {
             }
         }
          gameState = new GameState();
-         
+
+        gameState.setStartPlay();
+        playState = new PlayState(1);
+
+
+        holes = new ArrayList<ShapeModel>();
+
+        holes.add(new ShapeModel(20, 70,2)); // Top-left
+        holes.add(new ShapeModel(50, 70,2)); // Top-center
+        holes.add(new ShapeModel(80, 70,2)); // Top-right
+        holes.add(new ShapeModel(20, 30,2)); // Bottom-left
+        holes.add(new ShapeModel(50, 30,2)); // Bottom-center
+        holes.add(new ShapeModel(80, 30,2)); // Bottom-right
+
+
 
     }
+
+
 
     @Override
     public void display(GLAutoDrawable glAutoDrawable) {
@@ -87,6 +103,15 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
             } else {
 
+                for (ShapeModel hole: holes){
+                    DrawImage(gl , hole.x , hole.y ,hole.index ,1 , 1);
+
+                    if(hole.hasRabbit){
+                        DrawImage(gl , hole.x , hole.y +5,0 ,0.8f , 0.8f);
+
+                    }
+                }
+
             }
         }
                 break;
@@ -114,6 +139,29 @@ public class RabbitGLEvrntListener extends RabbitListener {
         gl.glVertex3f(-1.0F, 1.0F, -1.0F);
         gl.glEnd();
         gl.glPopMatrix();
+        gl.glDisable(GL.GL_BLEND);
+    }
+
+    public void DrawImage(GL gl,int x, int y, int index, float scaleX,float scaleY){
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index]);
+        gl.glPushMatrix();
+        gl.glTranslated( x/(MAX_WIDTH/2.0) - 1, y/(MAX_HEIGHT/2.0) - 1, 0);
+        gl.glScaled(0.15*scaleX, 0.15*scaleY, 1);
+//        System.out.println(x +" " + y);
+        gl.glBegin(GL.GL_QUADS);
+        // Front Face
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+
         gl.glDisable(GL.GL_BLEND);
     }
     @Override
