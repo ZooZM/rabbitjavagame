@@ -5,7 +5,9 @@ public class PlayState {
     public boolean isPaused;
     public boolean isLose;
     int gameSpeed;
-    public PlayState(){
+    int numOfPlayers;
+    public PlayState(int numOfPlayers){
+        this.numOfPlayers=numOfPlayers;
         isPaused=false;
         isLose=false;
         sTimer=System.currentTimeMillis();

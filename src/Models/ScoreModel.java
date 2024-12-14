@@ -1,17 +1,17 @@
 package Models;
 
-public class Score {
+public class ScoreModel {
     UserModel user;
     int highScore;
     int lives;
 
-    public Score(UserModel user, int highScore, int lives) {
+    public ScoreModel(UserModel user, int highScore, int lives) {
         this.user = user;
         this.highScore = highScore;
         this.lives = lives;
     }
 
-    public void isFall(){
+    public void itFall(){
         this.lives--;
     }
 

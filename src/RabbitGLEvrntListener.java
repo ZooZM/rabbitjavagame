@@ -1,3 +1,4 @@
+import Models.ShapeModel;
 import Models.UserModel;
 import Texture.TextureReader;
 import states.GameState;
@@ -9,15 +10,20 @@ import javax.media.opengl.glu.GLU;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class RabbitGLEvrntListener extends RabbitListener {
     public static final int MAX_WIDTH = 100, MAX_HEIGHT = 100; // set max height and width to translate sprites using integers
-    int xclicked = 200;
-    int yclicked = 200;
-    int xmotion=0  , ymotion =0;
+    int xClicked = 200;
+    int yClicked = 200;
+    int xMotion =0  , yMotion =0;
     GameState gameState;
     PlayState playState;
     UserModel userModel;
+    ArrayList<ShapeModel> holes;
+    ArrayList<ShapeModel> hammers;
+    
+
     String[] textureNames= new String[]{"rabbit2.png", "Hammer.png", "Hole.png", "Boom.png", "Hit.png", "Back.jpeg", "play.png",
             "exit.png", "soundOn.png", "soundOff.png", "easy.png", "medium.png", "hard.png", "backbtn.png", "hammer3.png",
             "HowToPlay.png", "playAgain.png", "home.png", "restart.png", "resume.png", "Back1.png", "Hamme2r.png", "Hamer3.png",
@@ -44,7 +50,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
             }
         }
          gameState = new GameState();
-         playState = new PlayState();
+         
 
     }
 
@@ -126,9 +132,9 @@ public class RabbitGLEvrntListener extends RabbitListener {
         Component c = e.getComponent();
         double width = c.getWidth();
         double height = c.getHeight();
-        xclicked = (int)(x / width * 100.0);
-        yclicked = (int)(y / height * 100.0);
-        yclicked = 100 - yclicked;
+        xClicked = (int)(x / width * 100.0);
+        yClicked = (int)(y / height * 100.0);
+        yClicked = 100 - yClicked;
         switch (gameState.getGameState()) {
             case "start":{
 
@@ -198,8 +204,8 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        xmotion= (int)convertX(e.getX() , e.getComponent().getWidth());
-        ymotion= (int)convertY(e.getY() , e.getComponent().getHeight());
+        xMotion = (int)convertX(e.getX() , e.getComponent().getWidth());
+        yMotion = (int)convertY(e.getY() , e.getComponent().getHeight());
     }
 
 
