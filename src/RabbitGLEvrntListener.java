@@ -35,7 +35,8 @@ public class RabbitGLEvrntListener extends RabbitListener {
     String[] textureNames = new String[]{"rabbit2.png", "Hammer.png", "Hole.png", "Boom.png", "Hit.png"
             , "Back.jpeg", "play.png", "exit.png", "soundOn.png", "soundOff.png",
             "easy.png", "medium.png", "hard.png", "backbtn.png", "hammer3.png", "HowToPlay.png",
-            "playAgain.png", "home.png", "restart.png", "resume.png", "Back1.png",
+            "playAgain.png","q.png","w.png","e.png","a.png","s.png","d.png",
+            "home.png", "restart.png", "resume.png", "Back1.png",
             "Hamme2r.png", "Hamer3.png", "Hammer4.png", "gameOver.png", "puase.png", "ins.png" , "levels.png","Back.png"};
 
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
@@ -62,7 +63,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
         gameState = new GameState();
 
         gameState.setStartPlay();
-        playState = new PlayState(1);
+        playState = new PlayState(2);
         playState.setEasyMode();
         userModel = new UserModel("as",0);
         score = new ScoreModel(userModel,0,7);
@@ -122,7 +123,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 break;
 
             case "startPlay":
-                DrawBackground(gl , 20);
+                DrawBackground(gl , 26);
             {
                 if (playState.isLose) {
 
@@ -157,6 +158,12 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                         drawWord(gl,-0.9F,0.7f,"Lives", (long) score.user.lives);
                     }else{
+                        DrawImage(gl ,20 , 40 ,17 ,0.4f , 0.4f);//Q
+                        DrawImage(gl , 50, 40 ,18 ,0.4f , 0.4f);//W
+                        DrawImage(gl , 80, 40 ,19 ,0.4f , 0.4f);//E
+                        DrawImage(gl , 20, 20 ,20 ,0.4f , 0.4f);//A
+                        DrawImage(gl , 50, 20 ,21 ,0.4f , 0.4f);//S
+                        DrawImage(gl , 80, 20 ,22 ,0.4f , 0.4f);//D
 
                     }
 
@@ -198,7 +205,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
         gl.glEnable(GL.GL_BLEND);
         gl.glBindTexture(GL.GL_TEXTURE_2D, textures[i]);
         gl.glPushMatrix();
-        gl.glBegin(7);
+        gl.glBegin(GL.GL_QUADS);
         gl.glTexCoord2f(0.0F, 0.0F);
         gl.glVertex3f(-1.0F, -1.0F, -1.0F);
         gl.glTexCoord2f(1.0F, 0.0F);
