@@ -33,6 +33,10 @@ public class RabbitGLEvrntListener extends RabbitListener {
     CollisionManger collisionManger;
     ArrayList<ShapeModel> holes;
     ShapeModel hammer;
+    ShapeModel pause;
+    ShapeModel resume;
+    ShapeModel restart;
+    ShapeModel exit;
     ScoreModel score ;
     ScoreModel score2 ;
 
@@ -74,7 +78,10 @@ public class RabbitGLEvrntListener extends RabbitListener {
         userModel2 = new UserModel("mm",0);
         score = new ScoreModel(userModel,0,7);
         score2 = new ScoreModel(userModel2,0,7);
-
+        pause=new ShapeModel(92,92,textureNames.length-4);
+        resume=new ShapeModel(50,70,textureNames.length-10);
+        restart=new ShapeModel(50,50,textureNames.length-11);
+        exit=new ShapeModel(50,30,7);
 
         holes = new ArrayList<ShapeModel>();
 
@@ -134,9 +141,19 @@ public class RabbitGLEvrntListener extends RabbitListener {
             {
                 if (playState.isLose) {
 
+
                 } else if (playState.isPaused) {
+                    //--------------------------------------------------Pause menu--------------------------------------------------
+
+                    DrawImage(gl, pause.x, pause.y,pause.index,0.75f,0.75f);
+                    DrawImage(gl, resume.x, resume.y, resume.index, 1.1f,1f);
+                    DrawImage(gl, restart.x, restart.y, restart.index, 1.1f,1f);
+                    DrawImage(gl, exit.x, exit.y, exit.index, 1.1f,1f);
+
+                    //--------------------------------------------------Pause menu--------------------------------------------------
 
                 } else {
+                    DrawImage(gl, pause.x, pause.y,pause.index,0.75f,0.75f);
 
                     currentTimeMillis = System.currentTimeMillis();
                     elapsedTimeSeconds = (currentTimeMillis - playState.sTimer) / 1000L;
@@ -163,6 +180,8 @@ public class RabbitGLEvrntListener extends RabbitListener {
                     if (speed % playState.gameSpeed == 0) {
                         generateRabbit();
                     }
+                    //--------------------------------------------------GenerateRabbitSpeed--------------------------------------------------
+
                     if(playState.numOfPlayers == 1){
                         hammer.x = xMotion+5;
                         hammer.y = yMotion+1;
@@ -355,7 +374,43 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                 } else if (playState.isPaused) {
 
+                    if(isCatch(xClicked,yClicked, pause.x, pause.y,5)){
+                        playState.isPaused= !playState.isPaused;
+                        System.out.println("Resume");
+
+                    }
+
+                    if(isCatch(xClicked,yClicked,resume.x, resume.y, 8)){
+                        playState.isPaused= false;
+                        System.out.println("Resume");
+
+                    }
+                    if(isCatch(xClicked,yClicked, restart.x, restart.y, 8)){
+                        playState.isPaused= false;
+                        score.user.lives = 7;
+                        score.user.score=0;
+                        // if multi
+                        score2.user.lives = 7;
+                        score2.user.score=0;
+                        // if multi
+                        playState.sTimer =System.currentTimeMillis();
+                        System.out.println("Restart");
+
+                    }
+                    if(isCatch(xClicked,yClicked,exit.x, exit.y, 8)){
+                        System.out.println("Exit");
+
+                    }
+
+
+
                 } else {
+
+                    if(isCatch(xClicked,yClicked, pause.x, pause.y, 5)){
+                        playState.isPaused= !playState.isPaused;
+                        System.out.println("Resume");
+
+                    }
                     int r =6;
                     for (ShapeModel holeAxis : holes) {
                         if (isCatch(xClicked, yClicked, holeAxis.x, holeAxis.y, r) && holeAxis.hasRabbit) {
@@ -461,6 +516,9 @@ public class RabbitGLEvrntListener extends RabbitListener {
         else if(e.getKeyCode() == KeyEvent.VK_D){
             xkey=80;
             ykey=30;
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+           playState.isPaused=!playState.isPaused;
         }
 
 
