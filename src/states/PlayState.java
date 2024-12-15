@@ -4,6 +4,7 @@ public class PlayState {
     public Long sTimer;
     public boolean isPaused;
     public boolean isLose;
+    public boolean isPlay;
     public  int gameSpeed;
     public int numOfPlayers;
     public PlayState(int numOfPlayers){
@@ -24,4 +25,13 @@ public class PlayState {
     public void setHardMode(){
         this.gameSpeed=80;
     }
+    public void setLose() {
+        isLose = true;
+    }
+    public void setPlay() {
+        isLose = false;
+        isPaused = false;
+    }
+
+
 }

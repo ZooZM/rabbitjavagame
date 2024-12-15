@@ -4,7 +4,7 @@ import Models.UserModel;
 import Texture.TextureReader;
 import states.GameState;
 import states.PlayState;
-
+import com.sun.opengl.util.GLUT;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
@@ -22,6 +22,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
     int yClicked = 200;
     int xMotion = 0, yMotion = 0;
     int speed = 0;
+    GLUT glut = new GLUT();
     GameState gameState;
     PlayState playState;
     UserModel userModel;
@@ -80,7 +81,8 @@ public class RabbitGLEvrntListener extends RabbitListener {
         generateRabbit();
     }
 
-
+    long currentTimeMillis;
+    long elapsedTimeSeconds;
     @Override
     public void display(GLAutoDrawable glAutoDrawable) {
         GL gl = glAutoDrawable.getGL();
@@ -128,6 +130,10 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                 } else {
 
+                    currentTimeMillis = System.currentTimeMillis();
+                    elapsedTimeSeconds = (currentTimeMillis - playState.sTimer) / 1000L;
+
+
                     for (ShapeModel hole : holes) {
                         DrawImage(gl, hole.x, hole.y, hole.index, 1, 1);
 
@@ -145,6 +151,11 @@ public class RabbitGLEvrntListener extends RabbitListener {
                         hammer.x = xMotion+5;
                         hammer.y = yMotion+1;
                         DrawImage(gl, hammer.x, hammer.y ,hammer.index,0.8f,0.8f);
+                        drawWord(gl,-0.9F,0.9f,"Timer", elapsedTimeSeconds);
+
+                        drawWord(gl,-0.9F,0.8f,"Score", (long) score.user.score);
+
+                        drawWord(gl,-0.9F,0.7f,"Lives", (long) score.user.lives);
                     }else{
 
                     }
@@ -216,6 +227,18 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
         gl.glDisable(GL.GL_BLEND);
     }
+    private void drawWord(GL gl,float x,float y,String word,Long var) {
+        gl.glRasterPos2f(x, y);
+        String livesString = word +": "+ var;
+        char[] var3 = livesString.toCharArray();
+        int var4 = var3.length;
+
+        for(int var5 = 0; var5 < var4; ++var5) {
+            char c = var3[var5];
+            glut.glutBitmapCharacter(8, c);
+        }
+
+    }
 
     @Override
     public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
@@ -271,6 +294,9 @@ public class RabbitGLEvrntListener extends RabbitListener {
                             score.setHighScore(score.user.score);
                             System.out.println("Catch");
                         }else if (isCatch(xClicked, yClicked, holeAxis.x, holeAxis.y, r)) {
+                            if(score.user.isLose()){
+                                playState.setLose();
+                            }
                             score.itFall();
                             System.out.println("fall");
                         }
