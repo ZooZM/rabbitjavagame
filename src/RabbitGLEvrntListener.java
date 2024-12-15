@@ -55,7 +55,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
         }
         gameState = new GameState();
 
-        gameState.setStart();
+        gameState.setInstruction();
         playState = new PlayState(1);
         playState.setEasyMode();
 
@@ -79,7 +79,6 @@ public class RabbitGLEvrntListener extends RabbitListener {
         GL gl = glAutoDrawable.getGL();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
-        DrawBackground(gl , 20);
         switch (gameState.getGameState()) {
             case "start": {
                 DrawBackground(gl , 28);
@@ -93,6 +92,9 @@ public class RabbitGLEvrntListener extends RabbitListener {
             break;
 
             case "instruction":
+                DrawBackground(gl , 26);
+                DrawImage(gl, 90, 90, 13, 1f, 1f);
+
 
                 break;
 
@@ -104,7 +106,9 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                 break;
 
-            case "startPlay": {
+            case "startPlay":
+                DrawBackground(gl , 20);
+            {
                 if (playState.isLose) {
 
                 } else if (playState.isPaused) {
