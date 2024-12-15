@@ -175,14 +175,21 @@ public class RabbitGLEvrntListener extends RabbitListener {
     }
 
 
+    int previousNum = -1;
     void generateRabbit() {
 
         for (ShapeModel hole : holes) {
             hole.hasRabbit = false;
         }
+
         Random random = new Random();
         int num;
-        num = random.nextInt(6);
+
+        do {
+            num = random.nextInt(6);
+        } while (num == previousNum);
+
+        previousNum = num;
         holes.get(num).hasRabbit = true;
     }
 
