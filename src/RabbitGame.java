@@ -4,6 +4,7 @@ import com.sun.opengl.util.FPSAnimator;
 
 import javax.media.opengl.GLCanvas;
 import javax.swing.JFrame;
+import java.awt.*;
 
 public class RabbitGame extends JFrame {
     RabbitListener listener = new RabbitGLEvrntListener();
@@ -17,12 +18,13 @@ public class RabbitGame extends JFrame {
         glcanvas.addGLEventListener(listener);
         glcanvas.addMouseListener(listener);
         glcanvas.addMouseMotionListener(listener);
-        add(glcanvas, "Center");
+        glcanvas.addKeyListener(listener);
+        add(glcanvas, BorderLayout.CENTER);
         Animator animator = new FPSAnimator(15);
         animator.add(glcanvas);
         animator.start();
         setTitle("Catch The rabbit!!");
-        setDefaultCloseOperation(3);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(700, 700);
         setLocationRelativeTo(this);
         setVisible(true);

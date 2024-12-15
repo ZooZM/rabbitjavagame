@@ -8,7 +8,7 @@ public class ScoreModel {
     public ScoreModel(UserModel user, int highScore, int lives) {
         this.user = user;
         this.highScore = highScore;
-       user.lives  = lives;
+        user.lives  = lives;
     }
 
     public void itFall(){

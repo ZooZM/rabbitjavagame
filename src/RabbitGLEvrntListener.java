@@ -10,6 +10,7 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -21,15 +22,19 @@ public class RabbitGLEvrntListener extends RabbitListener {
     int xClicked = 200;
     int yClicked = 200;
     int xMotion = 0, yMotion = 0;
+    int xkey = 10 , ykey = 50 ;
+
     int speed = 0;
     GLUT glut = new GLUT();
     GameState gameState;
     PlayState playState;
     UserModel userModel;
+    UserModel userModel2;
     CollisionManger collisionManger;
     ArrayList<ShapeModel> holes;
     ShapeModel hammer;
     ScoreModel score ;
+    ScoreModel score2 ;
 
 
     String[] textureNames = new String[]{"rabbit2.png", "Hammer.png", "Hole.png", "Boom.png", "Hit.png"
@@ -66,7 +71,9 @@ public class RabbitGLEvrntListener extends RabbitListener {
         playState = new PlayState(2);
         playState.setEasyMode();
         userModel = new UserModel("as",0);
+        userModel2 = new UserModel("mm",0);
         score = new ScoreModel(userModel,0,7);
+        score2 = new ScoreModel(userModel2,0,7);
 
 
         holes = new ArrayList<ShapeModel>();
@@ -142,6 +149,14 @@ public class RabbitGLEvrntListener extends RabbitListener {
                             DrawImage(gl, hole.x, hole.y + 5, 0, 0.8f, 0.8f);
 
                         }
+                        //--------------------------------------------------DrawBoom--------------------------------------------------
+                        //for first hammer
+                        if(hole.isBoom){
+                            DrawImage(gl,hole.x,hole.y,3 , 1 ,1);
+                            hole.isBoom=false;
+                        }
+
+                        //--------------------------------------------------DrawBoom--------------------------------------------------
                     }
                     //--------------------------------------------------GenerateRabbitSpeed--------------------------------------------------
                     speed += 1;
@@ -158,12 +173,43 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                         drawWord(gl,-0.9F,0.7f,"Lives", (long) score.user.lives);
                     }else{
+
+                        //--------------------------------------------------MultiPlayer--------------------------------------------------
                         DrawImage(gl ,20 , 40 ,17 ,0.4f , 0.4f);//Q
                         DrawImage(gl , 50, 40 ,18 ,0.4f , 0.4f);//W
                         DrawImage(gl , 80, 40 ,19 ,0.4f , 0.4f);//E
                         DrawImage(gl , 20, 20 ,20 ,0.4f , 0.4f);//A
                         DrawImage(gl , 50, 20 ,21 ,0.4f , 0.4f);//S
                         DrawImage(gl , 80, 20 ,22 ,0.4f , 0.4f);//D
+
+
+                        DrawImage(gl , xkey ,ykey,1 ,-1f , 1f);
+                        for(Models.ShapeModel hole:holes){
+                            if(isCatch(xkey,ykey,hole.x,hole.y,6)&&hole.hasRabbit){
+                                hole.isBoom =true;
+                                hole.hasRabbit = false;
+                                generateRabbit();
+                                speed = 0;
+                                score2.user.score++;
+                                score2.setHighScore(score2.user.score);
+                                System.out.println(xkey +" "+ykey);
+                                System.out.println("Catch");
+                                xkey=10;
+                                ykey=50;
+
+                            }
+                            else if (isCatch(xkey, ykey, hole.x, hole.y, 6)) {
+                                if(score2.user.isLose()){
+                                    playState.setLose();
+                                }
+                                score2.itFall();
+                                xkey=10;
+                                ykey=50;
+                                System.out.println("fall");
+                            }
+
+                        }
+                        //--------------------------------------------------MultiPlayer--------------------------------------------------
 
                     }
 
@@ -238,7 +284,6 @@ public class RabbitGLEvrntListener extends RabbitListener {
         gl.glVertex3f(-1.0f, 1.0f, -1.0f);
         gl.glEnd();
         gl.glPopMatrix();
-
         gl.glDisable(GL.GL_BLEND);
     }
     private void drawWord(GL gl,float x,float y,String word,Long var) {
@@ -372,4 +417,43 @@ public class RabbitGLEvrntListener extends RabbitListener {
     }
 
 
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode() == KeyEvent.VK_Q){
+            xkey=20;
+            ykey=50;
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_W){
+            xkey=50;
+            ykey=50;
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_E){
+            xkey=80;
+            ykey=50;
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_A){
+            xkey=20;
+            ykey=30;
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_S){
+            xkey=50;
+            ykey=30;
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_D){
+            xkey=80;
+            ykey=30;
+        }
+
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+    }
 }
