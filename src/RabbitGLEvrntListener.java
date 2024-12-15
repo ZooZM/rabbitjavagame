@@ -30,7 +30,6 @@ public class RabbitGLEvrntListener extends RabbitListener {
     PlayState playState;
     UserModel userModel;
     UserModel userModel2;
-    CollisionManger collisionManger;
     ArrayList<ShapeModel> holes;
     ShapeModel hammer;
     ShapeModel pause;
@@ -41,12 +40,13 @@ public class RabbitGLEvrntListener extends RabbitListener {
     ScoreModel score2 ;
 
 
-    String[] textureNames = new String[]{"rabbit2.png", "Hammer.png", "Hole.png", "Boom.png", "Hit.png"
-            , "Back.jpeg", "play.png", "exit.png", "soundOn.png", "soundOff.png",
+    String[] textureNames = new String[]{"rabbit2.png", "Hammer.png", "Hole.png", "Boom.png", "Hit.png",
+            "Back.jpeg", "play.png", "exit.png", "soundOn.png", "soundOff.png",
             "easy.png", "medium.png", "hard.png", "backbtn.png", "hammer3.png", "HowToPlay.png",
             "playAgain.png","q.png","w.png","e.png","a.png","s.png","d.png",
             "home.png", "restart.png", "resume.png", "Back1.png",
-            "Hamme2r.png", "Hamer3.png", "Hammer4.png", "gameOver.png", "puase.png", "ins.png" , "levels.png","Back.png"};
+            "Hamme2r.png", "Hamer3.png", "Hammer4.png", "gameOver.png", "puase.png", "ins.png" ,
+            "levels.png","Back.png"};
 
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
     int[] textures = new int[textureNames.length];
@@ -71,7 +71,9 @@ public class RabbitGLEvrntListener extends RabbitListener {
         }
         gameState = new GameState();
 
-        gameState.setStartPlay();
+//        gameState.setStartPlay();
+//        gameState.setStart();
+        gameState.setChooseMode();
         playState = new PlayState(2);
         playState.setEasyMode();
         userModel = new UserModel("as",0);
@@ -107,18 +109,18 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
         switch (gameState.getGameState()) {
             case "start": {
-                DrawBackground(gl , 28);
+                DrawBackground(gl , 34);
 
                 DrawImage(gl, 50, 70, 6, 1.5f, 1f);
                 DrawImage(gl, 50, 50, 15, 1.5f, 1f);
                 DrawImage(gl, 90, 90, 8, 1f, 1f);
-                DrawImage(gl, 50, 30, 27, 1.7f, 2f);//back
+                DrawImage(gl, 50, 30, 33, 1.7f, 2f);//back
 
             }
             break;
 
             case "instruction":
-                DrawBackground(gl , 26);
+                DrawBackground(gl , 32);
                 DrawImage(gl, 90, 90, 13, 1f, 1f);
 
                 break;
