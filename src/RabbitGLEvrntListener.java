@@ -1,3 +1,4 @@
+import Models.ScoreModel;
 import Models.ShapeModel;
 import Models.UserModel;
 import Texture.TextureReader;
@@ -6,9 +7,11 @@ import states.PlayState;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -22,8 +25,10 @@ public class RabbitGLEvrntListener extends RabbitListener {
     GameState gameState;
     PlayState playState;
     UserModel userModel;
+    CollisionManger collisionManger;
     ArrayList<ShapeModel> holes;
-    ArrayList<ShapeModel> hammers;
+    ShapeModel hammer;
+    ScoreModel score ;
 
 
     String[] textureNames = new String[]{"rabbit2.png", "Hammer.png", "Hole.png", "Boom.png", "Hit.png"
@@ -55,9 +60,11 @@ public class RabbitGLEvrntListener extends RabbitListener {
         }
         gameState = new GameState();
 
-        gameState.setChooseMode();
+        gameState.setStartPlay();
         playState = new PlayState(1);
         playState.setEasyMode();
+        userModel = new UserModel("as",0);
+        score = new ScoreModel(userModel,0,7);
 
 
         holes = new ArrayList<ShapeModel>();
@@ -68,7 +75,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
         holes.add(new ShapeModel(20, 30, 2)); // Bottom-left
         holes.add(new ShapeModel(50, 30, 2)); // Bottom-center
         holes.add(new ShapeModel(80, 30, 2)); // Bottom-right
-
+        hammer=new ShapeModel(0,0,1);
 
         generateRabbit();
     }
@@ -79,6 +86,8 @@ public class RabbitGLEvrntListener extends RabbitListener {
         GL gl = glAutoDrawable.getGL();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
+
+
         switch (gameState.getGameState()) {
             case "start": {
                 DrawBackground(gl , 28);
@@ -132,6 +141,13 @@ public class RabbitGLEvrntListener extends RabbitListener {
                     if (speed % playState.gameSpeed == 0) {
                         generateRabbit();
                     }
+                    if(playState.numOfPlayers == 1){
+                        hammer.x = xMotion+5;
+                        hammer.y = yMotion+1;
+                        DrawImage(gl, hammer.x, hammer.y ,hammer.index,0.8f,0.8f);
+                    }else{
+
+                    }
 
                 }
 
@@ -147,7 +163,6 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
     }
 
-    ;
 
     void generateRabbit() {
 
@@ -246,7 +261,20 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 } else if (playState.isPaused) {
 
                 } else {
-
+                    int r =6;
+                    for (ShapeModel holeAxis : holes) {
+                        if (isCatch(xClicked, yClicked, holeAxis.x, holeAxis.y, r) && holeAxis.hasRabbit) {
+                            holeAxis.hasRabbit = false;
+                            generateRabbit();
+                            speed = 0;
+                            score.user.score++;
+                            score.setHighScore(score.user.score);
+                            System.out.println("Catch");
+                        }else if (isCatch(xClicked, yClicked, holeAxis.x, holeAxis.y, r)) {
+                            score.itFall();
+                            System.out.println("fall");
+                        }
+                    }
                 }
             }
             break;
@@ -256,16 +284,22 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 break;
         }
     }
-
+            boolean isCatch(int xclicked,int yclicked,int x, int y, int r){
+                return (xclicked<=(x+r)&&xclicked>=(x-r)&&yclicked<=(y+r)&&yclicked>=(y-r));
+            }
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+    if(!(playState.isLose || playState.isPaused)){
+        hammer.index = textureNames.length -7;
+    }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        if(!(playState.isLose || playState.isPaused)){
+            hammer.index = 1;
+        }
     }
 
     @Override

@@ -5,7 +5,7 @@ public class PlayState {
     public boolean isPaused;
     public boolean isLose;
     public  int gameSpeed;
-    int numOfPlayers;
+    public int numOfPlayers;
     public PlayState(int numOfPlayers){
         this.numOfPlayers=numOfPlayers;
         isPaused=false;

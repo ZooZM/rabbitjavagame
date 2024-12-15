@@ -1,18 +1,18 @@
 package Models;
 
 public class ScoreModel {
-    UserModel user;
+    public UserModel user;
     int highScore;
-    int lives;
+
 
     public ScoreModel(UserModel user, int highScore, int lives) {
         this.user = user;
         this.highScore = highScore;
-        this.lives = lives;
+       user.lives  = lives;
     }
 
     public void itFall(){
-        this.lives--;
+        this.user.lives--;
     }
 
     public void setHighScore(int highScore) {

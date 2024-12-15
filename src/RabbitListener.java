@@ -12,4 +12,5 @@ public abstract class RabbitListener implements GLEventListener, MouseListener, 
 
     public RabbitListener() {
     }
+
 }
