@@ -55,7 +55,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
         }
         gameState = new GameState();
 
-        gameState.setInstruction();
+        gameState.setChooseMode();
         playState = new PlayState(1);
         playState.setEasyMode();
 
@@ -86,7 +86,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 DrawImage(gl, 50, 70, 6, 1.5f, 1f);
                 DrawImage(gl, 50, 50, 15, 1.5f, 1f);
                 DrawImage(gl, 90, 90, 8, 1f, 1f);
-                DrawImage(gl, 50, 30, 27, 1.7f, 2f);
+                DrawImage(gl, 50, 30, 27, 1.7f, 2f);//back
 
             }
             break;
@@ -95,10 +95,14 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 DrawBackground(gl , 26);
                 DrawImage(gl, 90, 90, 13, 1f, 1f);
 
-
                 break;
 
             case "chooseMode":
+                DrawBackground(gl , 28);
+                DrawImage(gl, 50, 50, 11, 1.4f, 1f);
+                DrawImage(gl, 50, 70, 10, 1.4f, 1f);
+                DrawImage(gl, 50, 30, 12, 1.4f, 1f);
+                DrawImage(gl, 90, 90, 13, 1f, 1f);
 
                 break;
 
