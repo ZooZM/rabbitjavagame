@@ -40,13 +40,13 @@ public class RabbitGLEvrntListener extends RabbitListener {
     ScoreModel score2 ;
 
 
-    String[] textureNames = new String[]{"rabbit2.png", "Hammer.png", "Hole.png", "Boom.png", "Hit.png",
-            "Back.jpeg", "play.png", "exit.png", "soundOn.png", "soundOff.png",
+
+    String[] textureNames = new String[]{"rabbit2.png", "Hammer.png", "Hole.png", "Boom.png", "Hit.png"
+            , "Back.jpeg", "play.png", "exit.png", "soundOn.png", "soundOff.png",
             "easy.png", "medium.png", "hard.png", "backbtn.png", "hammer3.png", "HowToPlay.png",
-            "playAgain.png","q.png","w.png","e.png","a.png","s.png","d.png",
-            "home.png", "restart.png", "resume.png", "Back1.png",
-            "Hamme2r.png", "Hamer3.png", "Hammer4.png", "gameOver.png", "puase.png", "ins.png" ,
-            "levels.png","Back.png"};
+            "playAgain.png", "home.png", "restart.png", "resume.png", "Back1.png",
+            "Hamme2r.png", "Hamer3.png", "Hammer4.png", "gameOver.png", "puase.png", "ins.png" , "levels.png","Back.png",
+            "q.png","w.png","e.png","a.png","s.png","d.png"};
 
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
     int[] textures = new int[textureNames.length];
@@ -71,18 +71,18 @@ public class RabbitGLEvrntListener extends RabbitListener {
         }
         gameState = new GameState();
 
-//        gameState.setStartPlay();
-//        gameState.setStart();
-        gameState.setChooseMode();
+        gameState.setStartPlay();
+
+
         playState = new PlayState(2);
         playState.setEasyMode();
         userModel = new UserModel("as",0);
         userModel2 = new UserModel("mm",0);
         score = new ScoreModel(userModel,0,7);
         score2 = new ScoreModel(userModel2,0,7);
-        pause=new ShapeModel(92,92,textureNames.length-4);
-        resume=new ShapeModel(50,70,textureNames.length-10);
-        restart=new ShapeModel(50,50,textureNames.length-11);
+        pause=new ShapeModel(92,92,25);
+        resume=new ShapeModel(50,70,19);
+        restart=new ShapeModel(50,50,18);
         exit=new ShapeModel(50,30,7);
 
         holes = new ArrayList<ShapeModel>();
@@ -109,18 +109,20 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
         switch (gameState.getGameState()) {
             case "start": {
-                DrawBackground(gl , 34);
+                DrawBackground(gl , 5);
 
                 DrawImage(gl, 50, 70, 6, 1.5f, 1f);
+
                 DrawImage(gl, 50, 50, 15, 1.5f, 1f);
                 DrawImage(gl, 90, 90, 8, 1f, 1f);
-                DrawImage(gl, 50, 30, 33, 1.7f, 2f);//back
+                DrawImage(gl, 50, 30, 27, 1.7f, 2f);
+                DrawImage(gl, 50, 30, 27, 1.7f, 2f);//back
 
             }
             break;
 
             case "instruction":
-                DrawBackground(gl , 32);
+                DrawBackground(gl , 26);
                 DrawImage(gl, 90, 90, 13, 1f, 1f);
 
                 break;
@@ -139,7 +141,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 break;
 
             case "startPlay":
-                DrawBackground(gl , 26);
+                DrawBackground(gl , 20);
             {
                 if (playState.isLose) {
 
@@ -209,12 +211,12 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
 
                         //--------------------------------------------------MultiPlayer--------------------------------------------------
-                        DrawImage(gl ,20 , 40 ,17 ,0.4f , 0.4f);//Q
-                        DrawImage(gl , 50, 40 ,18 ,0.4f , 0.4f);//W
-                        DrawImage(gl , 80, 40 ,19 ,0.4f , 0.4f);//E
-                        DrawImage(gl , 20, 20 ,20 ,0.4f , 0.4f);//A
-                        DrawImage(gl , 50, 20 ,21 ,0.4f , 0.4f);//S
-                        DrawImage(gl , 80, 20 ,22 ,0.4f , 0.4f);//D
+                        DrawImage(gl ,20 , 40 ,29,0.4f , 0.4f);//Q
+                        DrawImage(gl , 50, 40 ,30 ,0.4f , 0.4f);//W
+                        DrawImage(gl , 80, 40 ,31 ,0.4f , 0.4f);//E
+                        DrawImage(gl , 20, 20 ,32 ,0.4f , 0.4f);//A
+                        DrawImage(gl , 50, 20 ,33 ,0.4f , 0.4f);//S
+                        DrawImage(gl , 80, 20 ,34 ,0.4f , 0.4f);//D
 
 
                         DrawImage(gl , xkey ,ykey,1 ,-1f , 1f);
@@ -447,7 +449,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
     @Override
     public void mousePressed(MouseEvent e) {
     if(!(playState.isLose || playState.isPaused)){
-        hammer.index = textureNames.length -7;
+        hammer.index = 23;
     }
     }
 
