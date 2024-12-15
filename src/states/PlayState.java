@@ -4,7 +4,7 @@ public class PlayState {
     public Long sTimer;
     public boolean isPaused;
     public boolean isLose;
-    int gameSpeed;
+    public  int gameSpeed;
     int numOfPlayers;
     public PlayState(int numOfPlayers){
         this.numOfPlayers=numOfPlayers;

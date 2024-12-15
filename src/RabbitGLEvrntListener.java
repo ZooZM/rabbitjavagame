@@ -18,6 +18,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
     int xClicked = 200;
     int yClicked = 200;
     int xMotion =0  , yMotion =0;
+    int speed = 0;
     GameState gameState;
     PlayState playState;
     UserModel userModel;
@@ -54,6 +55,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
         gameState.setStartPlay();
         playState = new PlayState(1);
+        playState.setEasyMode();
 
 
         holes = new ArrayList<ShapeModel>();
@@ -66,7 +68,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
         holes.add(new ShapeModel(80, 30,2)); // Bottom-right
 
 
-
+        generateRabbit();
     }
 
 
@@ -112,7 +114,11 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                     }
                 }
-                generateRabbit();
+                //--------------------------------------------------GenerateRabbitSpeed--------------------------------------------------
+                speed +=1;
+                if(speed%playState.gameSpeed==0){
+                    generateRabbit();
+                }
 
             }
 
