@@ -173,6 +173,19 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                         drawWord(gl,-0.9F,0.7f,"Lives", (long) score.user.lives);
                     }else{
+                            hammer.x = xMotion+5;
+                            hammer.y = yMotion+1;
+                            DrawImage(gl, hammer.x, hammer.y ,hammer.index,0.8f,0.8f);
+                            drawWord(gl,-0.9F,0.9f,"Timer", elapsedTimeSeconds);
+
+                            drawWord(gl,0.5F,0.8f,"Score", (long) score.user.score);
+
+                            drawWord(gl,0.5F,0.7f,"Lives", (long) score.user.lives);
+
+                            drawWord(gl,-0.9F,0.8f,"Score2", (long) score2.user.score);
+
+                            drawWord(gl,-0.9F,0.7f,"Lives2", (long) score2.user.lives);
+
 
                         //--------------------------------------------------MultiPlayer--------------------------------------------------
                         DrawImage(gl ,20 , 40 ,17 ,0.4f , 0.4f);//Q
@@ -346,6 +359,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
                     int r =6;
                     for (ShapeModel holeAxis : holes) {
                         if (isCatch(xClicked, yClicked, holeAxis.x, holeAxis.y, r) && holeAxis.hasRabbit) {
+                            holeAxis.isBoom=true;
                             holeAxis.hasRabbit = false;
                             generateRabbit();
                             speed = 0;
