@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class RabbitGLEvrntListener extends RabbitListener {
     public static final int MAX_WIDTH = 100, MAX_HEIGHT = 100; // set max height and width to translate sprites using integers
@@ -57,9 +58,9 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
         holes = new ArrayList<ShapeModel>();
 
-        holes.add(new ShapeModel(20, 70,2)); // Top-left
-        holes.add(new ShapeModel(50, 70,2)); // Top-center
-        holes.add(new ShapeModel(80, 70,2)); // Top-right
+        holes.add(new ShapeModel(20, 50,2)); // Top-left
+        holes.add(new ShapeModel(50, 50,2)); // Top-center
+        holes.add(new ShapeModel(80, 50,2)); // Top-right
         holes.add(new ShapeModel(20, 30,2)); // Bottom-left
         holes.add(new ShapeModel(50, 30,2)); // Bottom-center
         holes.add(new ShapeModel(80, 30,2)); // Bottom-right
@@ -111,8 +112,12 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                     }
                 }
+                generateRabbit();
 
             }
+
+
+
         }
                 break;
 
@@ -124,6 +129,21 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
 
     }
+;
+    void generateRabbit() {
+
+        for (ShapeModel hole : holes) {
+            hole.hasRabbit = false;
+        }
+        Random random = new Random();
+        int num;
+        num = random.nextInt(6);
+        holes.get(num).hasRabbit = true;
+    }
+
+
+
+
     public void DrawBackground(GL gl) {
         gl.glEnable(GL.GL_BLEND);
         gl.glBindTexture(GL.GL_TEXTURE_2D, textures[20]);
