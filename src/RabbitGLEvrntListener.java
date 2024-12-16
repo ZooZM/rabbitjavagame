@@ -88,7 +88,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
         buttons.add(new ShapeModel(50,10,7));
 
 
-        playState = new PlayState(2);
+        playState = new PlayState(1);
         playState.setEasyMode();
         userModel = new UserModel("as",0);
         userModel2 = new UserModel("mm",0);
@@ -438,6 +438,17 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
             case "startPlay": {
                 if (playState.isLose) {
+                    if(isCollision(xClicked,yClicked,50,20,10)){
+                        playState.isLose =false;
+                        score.user.lives = 7;
+                        score.user.score=0;
+                        // if multi
+                        score2.user.lives = 7;
+                        score2.user.score=0;
+                        // if multi
+                        playState.sTimer =System.currentTimeMillis();
+                    }
+
 
                 } else if (playState.isPaused) {
 
