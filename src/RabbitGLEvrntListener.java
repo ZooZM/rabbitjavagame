@@ -16,13 +16,27 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import Texture.TextureReader;
+import com.sun.opengl.util.j2d.TextRenderer;
+import javax.media.opengl.GL;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.glu.GLU;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.io.*;
+import java.util.Random;
 
 public class RabbitGLEvrntListener extends RabbitListener {
     public static final int MAX_WIDTH = 100, MAX_HEIGHT = 100; // set max height and width to translate sprites using integers
     int xClicked = 200;
     int yClicked = 200;
     int xMotion = 0, yMotion = 0;
-    int xkey = 10 , ykey = 50 ;
+    int xkey = 10, ykey = 50;
 
     int speed = 0;
     GLUT glut = new GLUT();
@@ -36,20 +50,25 @@ public class RabbitGLEvrntListener extends RabbitListener {
     ShapeModel resume;
     ShapeModel restart;
     ShapeModel exit;
-    ScoreModel score ;
-    ScoreModel score2 ;
+    ScoreModel score;
+    ScoreModel score2;
+    private Clip backgroundMusic;
+    private Clip hammerSound;
+    private Clip winSound;
+    private Clip loseSound;
 
 
     String[] textureNames = new String[]{"rabbit2.png", "Hammer.png", "Hole.png", "Boom.png", "Hit.png",
             "Back.jpeg", "play.png", "exit.png", "soundOn.png", "soundOff.png",
             "easy.png", "medium.png", "hard.png", "backbtn.png", "hammer3.png", "HowToPlay.png",
-            "playAgain.png","q.png","w.png","e.png","a.png","s.png","d.png",
+            "playAgain.png", "q.png", "w.png", "e.png", "a.png", "s.png", "d.png",
             "home.png", "restart.png", "resume.png", "Back1.png",
-            "Hamme2r.png", "Hamer3.png", "Hammer4.png", "gameOver.png", "puase.png", "ins.png" ,
-            "levels.png","Back.png"};
+            "Hamme2r.png", "Hamer3.png", "Hammer4.png", "gameOver.png", "puase.png", "ins.png",
+            "levels.png", "Back.png"};
 
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
     int[] textures = new int[textureNames.length];
+
 
     @Override
     public void init(GLAutoDrawable glAutoDrawable) {
@@ -71,19 +90,22 @@ public class RabbitGLEvrntListener extends RabbitListener {
         }
         gameState = new GameState();
 
-//        gameState.setStartPlay();
-//        gameState.setStart();
-        gameState.setChooseMode();
+        // Remove this line
+        // gameState.setChooseMode();
+
+        // Start with Start Screen
+        gameState.setStart();
+
         playState = new PlayState(2);
         playState.setEasyMode();
-        userModel = new UserModel("as",0);
-        userModel2 = new UserModel("mm",0);
-        score = new ScoreModel(userModel,0,7);
-        score2 = new ScoreModel(userModel2,0,7);
-        pause=new ShapeModel(92,92,textureNames.length-4);
-        resume=new ShapeModel(50,70,textureNames.length-10);
-        restart=new ShapeModel(50,50,textureNames.length-11);
-        exit=new ShapeModel(50,30,7);
+        userModel = new UserModel("as", 0);
+        userModel2 = new UserModel("mm", 0);
+        score = new ScoreModel(userModel, 0, 7);
+        score2 = new ScoreModel(userModel2, 0, 7);
+        pause = new ShapeModel(92, 92, textureNames.length - 4);
+        resume = new ShapeModel(50, 70, textureNames.length - 10);
+        restart = new ShapeModel(50, 50, textureNames.length - 11);
+        exit = new ShapeModel(50, 30, 7);
 
         holes = new ArrayList<ShapeModel>();
 
@@ -93,13 +115,14 @@ public class RabbitGLEvrntListener extends RabbitListener {
         holes.add(new ShapeModel(20, 30, 2)); // Bottom-left
         holes.add(new ShapeModel(50, 30, 2)); // Bottom-center
         holes.add(new ShapeModel(80, 30, 2)); // Bottom-right
-        hammer=new ShapeModel(0,0,1);
+        hammer = new ShapeModel(0, 0, 1);
 
         generateRabbit();
     }
 
     long currentTimeMillis;
     long elapsedTimeSeconds;
+
     @Override
     public void display(GLAutoDrawable glAutoDrawable) {
         GL gl = glAutoDrawable.getGL();
@@ -109,7 +132,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
         switch (gameState.getGameState()) {
             case "start": {
-                DrawBackground(gl , 34);
+                DrawBackground(gl, 34);
 
                 DrawImage(gl, 50, 70, 6, 1.5f, 1f);
                 DrawImage(gl, 50, 50, 15, 1.5f, 1f);
@@ -120,13 +143,13 @@ public class RabbitGLEvrntListener extends RabbitListener {
             break;
 
             case "instruction":
-                DrawBackground(gl , 32);
+                DrawBackground(gl, 32);
                 DrawImage(gl, 90, 90, 13, 1f, 1f);
 
                 break;
 
             case "chooseMode":
-                DrawBackground(gl , 28);
+                DrawBackground(gl, 28);
                 DrawImage(gl, 50, 50, 11, 1.4f, 1f);
                 DrawImage(gl, 50, 70, 10, 1.4f, 1f);
                 DrawImage(gl, 50, 30, 12, 1.4f, 1f);
@@ -139,7 +162,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 break;
 
             case "startPlay":
-                DrawBackground(gl , 26);
+                DrawBackground(gl, 26);
             {
                 if (playState.isLose) {
 
@@ -147,15 +170,15 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 } else if (playState.isPaused) {
                     //--------------------------------------------------Pause menu--------------------------------------------------
 
-                    DrawImage(gl, pause.x, pause.y,pause.index,0.75f,0.75f);
-                    DrawImage(gl, resume.x, resume.y, resume.index, 1.1f,1f);
-                    DrawImage(gl, restart.x, restart.y, restart.index, 1.1f,1f);
-                    DrawImage(gl, exit.x, exit.y, exit.index, 1.1f,1f);
+                    DrawImage(gl, pause.x, pause.y, pause.index, 0.75f, 0.75f);
+                    DrawImage(gl, resume.x, resume.y, resume.index, 1.1f, 1f);
+                    DrawImage(gl, restart.x, restart.y, restart.index, 1.1f, 1f);
+                    DrawImage(gl, exit.x, exit.y, exit.index, 1.1f, 1f);
 
                     //--------------------------------------------------Pause menu--------------------------------------------------
 
                 } else {
-                    DrawImage(gl, pause.x, pause.y,pause.index,0.75f,0.75f);
+                    DrawImage(gl, pause.x, pause.y, pause.index, 0.75f, 0.75f);
 
                     currentTimeMillis = System.currentTimeMillis();
                     elapsedTimeSeconds = (currentTimeMillis - playState.sTimer) / 1000L;
@@ -170,9 +193,9 @@ public class RabbitGLEvrntListener extends RabbitListener {
                         }
                         //--------------------------------------------------DrawBoom--------------------------------------------------
                         //for first hammer
-                        if(hole.isBoom){
-                            DrawImage(gl,hole.x,hole.y,3 , 1 ,1);
-                            hole.isBoom=false;
+                        if (hole.isBoom) {
+                            DrawImage(gl, hole.x, hole.y, 3, 1, 1);
+                            hole.isBoom = false;
                         }
 
                         //--------------------------------------------------DrawBoom--------------------------------------------------
@@ -184,61 +207,60 @@ public class RabbitGLEvrntListener extends RabbitListener {
                     }
                     //--------------------------------------------------GenerateRabbitSpeed--------------------------------------------------
 
-                    if(playState.numOfPlayers == 1){
-                        hammer.x = xMotion+5;
-                        hammer.y = yMotion+1;
-                        DrawImage(gl, hammer.x, hammer.y ,hammer.index,0.8f,0.8f);
-                        drawWord(gl,-0.9F,0.9f,"Timer", elapsedTimeSeconds);
+                    if (playState.numOfPlayers == 1) {
+                        hammer.x = xMotion + 5;
+                        hammer.y = yMotion + 1;
+                        DrawImage(gl, hammer.x, hammer.y, hammer.index, 0.8f, 0.8f);
+                        drawWord(gl, -0.9F, 0.9f, "Timer", elapsedTimeSeconds);
 
-                        drawWord(gl,-0.9F,0.8f,"Score", (long) score.user.score);
+                        drawWord(gl, -0.9F, 0.8f, "Score", (long) score.user.score);
 
-                        drawWord(gl,-0.9F,0.7f,"Lives", (long) score.user.lives);
-                    }else{
-                            hammer.x = xMotion+5;
-                            hammer.y = yMotion+1;
-                            DrawImage(gl, hammer.x, hammer.y ,hammer.index,0.8f,0.8f);
-                            drawWord(gl,-0.9F,0.9f,"Timer", elapsedTimeSeconds);
+                        drawWord(gl, -0.9F, 0.7f, "Lives", (long) score.user.lives);
+                    } else {
+                        hammer.x = xMotion + 5;
+                        hammer.y = yMotion + 1;
+                        DrawImage(gl, hammer.x, hammer.y, hammer.index, 0.8f, 0.8f);
+                        drawWord(gl, -0.9F, 0.9f, "Timer", elapsedTimeSeconds);
 
-                            drawWord(gl,0.5F,0.8f,"Score", (long) score.user.score);
+                        drawWord(gl, 0.5F, 0.8f, "Score", (long) score.user.score);
 
-                            drawWord(gl,0.5F,0.7f,"Lives", (long) score.user.lives);
+                        drawWord(gl, 0.5F, 0.7f, "Lives", (long) score.user.lives);
 
-                            drawWord(gl,-0.9F,0.8f,"Score2", (long) score2.user.score);
+                        drawWord(gl, -0.9F, 0.8f, "Score2", (long) score2.user.score);
 
-                            drawWord(gl,-0.9F,0.7f,"Lives2", (long) score2.user.lives);
+                        drawWord(gl, -0.9F, 0.7f, "Lives2", (long) score2.user.lives);
 
 
                         //--------------------------------------------------MultiPlayer--------------------------------------------------
-                        DrawImage(gl ,20 , 40 ,17 ,0.4f , 0.4f);//Q
-                        DrawImage(gl , 50, 40 ,18 ,0.4f , 0.4f);//W
-                        DrawImage(gl , 80, 40 ,19 ,0.4f , 0.4f);//E
-                        DrawImage(gl , 20, 20 ,20 ,0.4f , 0.4f);//A
-                        DrawImage(gl , 50, 20 ,21 ,0.4f , 0.4f);//S
-                        DrawImage(gl , 80, 20 ,22 ,0.4f , 0.4f);//D
+                        DrawImage(gl, 20, 40, 17, 0.4f, 0.4f);//Q
+                        DrawImage(gl, 50, 40, 18, 0.4f, 0.4f);//W
+                        DrawImage(gl, 80, 40, 19, 0.4f, 0.4f);//E
+                        DrawImage(gl, 20, 20, 20, 0.4f, 0.4f);//A
+                        DrawImage(gl, 50, 20, 21, 0.4f, 0.4f);//S
+                        DrawImage(gl, 80, 20, 22, 0.4f, 0.4f);//D
 
 
-                        DrawImage(gl , xkey ,ykey,1 ,-1f , 1f);
-                        for(Models.ShapeModel hole:holes){
-                            if(isCatch(xkey,ykey,hole.x,hole.y,6)&&hole.hasRabbit){
-                                hole.isBoom =true;
+                        DrawImage(gl, xkey, ykey, 1, -1f, 1f);
+                        for (Models.ShapeModel hole : holes) {
+                            if (isCatch(xkey, ykey, hole.x, hole.y, 6) && hole.hasRabbit) {
+                                hole.isBoom = true;
                                 hole.hasRabbit = false;
                                 generateRabbit();
                                 speed = 0;
                                 score2.user.score++;
                                 score2.setHighScore(score2.user.score);
-                                System.out.println(xkey +" "+ykey);
+                                System.out.println(xkey + " " + ykey);
                                 System.out.println("Catch");
-                                xkey=10;
-                                ykey=50;
+                                xkey = 10;
+                                ykey = 50;
 
-                            }
-                            else if (isCatch(xkey, ykey, hole.x, hole.y, 6)) {
-                                if(score2.user.isLose()){
+                            } else if (isCatch(xkey, ykey, hole.x, hole.y, 6)) {
+                                if (score2.user.isLose()) {
                                     playState.setLose();
                                 }
                                 score2.itFall();
-                                xkey=10;
-                                ykey=50;
+                                xkey = 10;
+                                ykey = 50;
                                 System.out.println("fall");
                             }
 
@@ -263,6 +285,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
 
     int previousNum = -1;
+
     void generateRabbit() {
 
         for (ShapeModel hole : holes) {
@@ -281,7 +304,8 @@ public class RabbitGLEvrntListener extends RabbitListener {
     }
 
 
-    public void DrawBackground(GL gl , int i) {
+
+    public void DrawBackground(GL gl, int i) {
         gl.glEnable(GL.GL_BLEND);
         gl.glBindTexture(GL.GL_TEXTURE_2D, textures[i]);
         gl.glPushMatrix();
@@ -320,13 +344,14 @@ public class RabbitGLEvrntListener extends RabbitListener {
         gl.glPopMatrix();
         gl.glDisable(GL.GL_BLEND);
     }
-    private void drawWord(GL gl,float x,float y,String word,Long var) {
+
+    private void drawWord(GL gl, float x, float y, String word, Long var) {
         gl.glRasterPos2f(x, y);
-        String livesString = word +": "+ var;
+        String livesString = word + ": " + var;
         char[] var3 = livesString.toCharArray();
         int var4 = var3.length;
 
-        for(int var5 = 0; var5 < var4; ++var5) {
+        for (int var5 = 0; var5 < var4; ++var5) {
             char c = var3[var5];
             glut.glutBitmapCharacter(8, c);
         }
@@ -353,78 +378,99 @@ public class RabbitGLEvrntListener extends RabbitListener {
         xClicked = (int) (x / width * 100.0);
         yClicked = (int) (y / height * 100.0);
         yClicked = 100 - yClicked;
+
         switch (gameState.getGameState()) {
             case "start": {
-
+                // Handle clicks on start screen
+                if (isCatch(xClicked, yClicked, 50, 70, 8)) { // Play button
+                    gameState.setChooseMode();
+                } else if (isCatch(xClicked, yClicked, 50, 50, 8)) { // Instructions button
+                    gameState.setInstruction();
+                } else if (isCatch(xClicked, yClicked, 50, 30, 8)) { // Levels button
+                    gameState.setChooseMode(); // This will take us to the choose mode screen
+                } else if (isCatch(xClicked, yClicked, 90, 90, 5)) { // Exit button
+                    System.exit(0);
+                }
             }
             break;
 
-            case "instruction":
+            case "instruction": {
+                // Handle clicks on instruction screen
+                if (isCatch(xClicked, yClicked, 90, 90, 5)) { // Back button
+                    gameState.setStart();
+                }
+            }
+            break;
 
-                break;
-
-            case "chooseMode":
-
-                break;
-
-            case "chooseNumberOfPlayers":
-
-                break;
-
+            case "chooseMode": {
+                // Handle clicks on mode selection screen
+                if (isCatch(xClicked, yClicked, 50, 70, 8)) { // Easy mode
+                    playState.setEasyMode();
+                    gameState.setStartPlay();
+                    playState.sTimer = System.currentTimeMillis();
+                } else if (isCatch(xClicked, yClicked, 50, 50, 8)) { // Medium mode
+                    playState.setMediumMode();
+                    gameState.setStartPlay();
+                    playState.sTimer = System.currentTimeMillis();
+                } else if (isCatch(xClicked, yClicked, 50, 30, 8)) { // Hard mode
+                    playState.setHardMode();
+                    gameState.setStartPlay();
+                    playState.sTimer = System.currentTimeMillis();
+                } else if (isCatch(xClicked, yClicked, 90, 90, 5)) { // Back button
+                    gameState.setStart();
+                }
+            }
+            break;
             case "startPlay": {
                 if (playState.isLose) {
-
+                    // Handle lose state
                 } else if (playState.isPaused) {
-
-                    if(isCatch(xClicked,yClicked, pause.x, pause.y,5)){
-                        playState.isPaused= !playState.isPaused;
+                    if (isCatch(xClicked, yClicked, pause.x, pause.y, 5)) {
+                        playState.isPaused = !playState.isPaused;
                         System.out.println("Resume");
-
                     }
-
-                    if(isCatch(xClicked,yClicked,resume.x, resume.y, 8)){
-                        playState.isPaused= false;
+                    if (isCatch(xClicked, yClicked, resume.x, resume.y, 8)) {
+                        playState.isPaused = false;
                         System.out.println("Resume");
-
                     }
-                    if(isCatch(xClicked,yClicked, restart.x, restart.y, 8)){
-                        playState.isPaused= false;
+                    if (isCatch(xClicked, yClicked, restart.x, restart.y, 8)) {
+                        playState.isPaused = false;
                         score.user.lives = 7;
-                        score.user.score=0;
-                        // if multi
+                        score.user.score = 0;
                         score2.user.lives = 7;
-                        score2.user.score=0;
-                        // if multi
-                        playState.sTimer =System.currentTimeMillis();
+                        score2.user.score = 0;
+                        playState.sTimer = System.currentTimeMillis();
                         System.out.println("Restart");
-
                     }
-                    if(isCatch(xClicked,yClicked,exit.x, exit.y, 8)){
-                        System.out.println("Exit");
-
+                    if (isCatch(xClicked, yClicked, exit.x, exit.y, 8)) {
+                        // Reset game state and return to start screen
+                        gameState.setStart();
+                        playState.isPaused = false;
+                        // Reset scores and lives for next game
+                        score.user.lives = 7;
+                        score.user.score = 0;
+                        score2.user.lives = 7;
+                        score2.user.score = 0;
+                        System.out.println("Return to Start Screen");
                     }
-
-
-
                 } else {
-
-                    if(isCatch(xClicked,yClicked, pause.x, pause.y, 5)){
-                        playState.isPaused= !playState.isPaused;
-                        System.out.println("Resume");
-
+                    if (isCatch(xClicked, yClicked, pause.x, pause.y, 5)) {
+                        playState.isPaused = !playState.isPaused;
+                        System.out.println("Pause");
                     }
-                    int r =6;
+
+                    int r = 6;
                     for (ShapeModel holeAxis : holes) {
                         if (isCatch(xClicked, yClicked, holeAxis.x, holeAxis.y, r) && holeAxis.hasRabbit) {
-                            holeAxis.isBoom=true;
+                            holeAxis.isBoom = true;
                             holeAxis.hasRabbit = false;
                             generateRabbit();
                             speed = 0;
                             score.user.score++;
                             score.setHighScore(score.user.score);
                             System.out.println("Catch");
-                        }else if (isCatch(xClicked, yClicked, holeAxis.x, holeAxis.y, r)) {
-                            if(score.user.isLose()){
+                        } else if (isCatch(xClicked, yClicked, holeAxis.x, holeAxis.y, r)) {
+                            if (score.user.isLose()) {
                                 playState.setLose();
                             }
                             score.itFall();
@@ -440,20 +486,21 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 break;
         }
     }
-            boolean isCatch(int xclicked,int yclicked,int x, int y, int r){
-                return (xclicked<=(x+r)&&xclicked>=(x-r)&&yclicked<=(y+r)&&yclicked>=(y-r));
-            }
+
+    boolean isCatch(int xclicked, int yclicked, int x, int y, int r) {
+        return (xclicked <= (x + r) && xclicked >= (x - r) && yclicked <= (y + r) && yclicked >= (y - r));
+    }
 
     @Override
     public void mousePressed(MouseEvent e) {
-    if(!(playState.isLose || playState.isPaused)){
-        hammer.index = textureNames.length -7;
-    }
+        if (!(playState.isLose || playState.isPaused)) {
+            hammer.index = textureNames.length - 7;
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if(!(playState.isLose || playState.isPaused)){
+        if (!(playState.isLose || playState.isPaused)) {
             hammer.index = 1;
         }
     }
@@ -495,39 +542,89 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_Q){
-            xkey=20;
-            ykey=50;
-        }
-        else if(e.getKeyCode() == KeyEvent.VK_W){
-            xkey=50;
-            ykey=50;
-        }
-        else if(e.getKeyCode() == KeyEvent.VK_E){
-            xkey=80;
-            ykey=50;
-        }
-        else if(e.getKeyCode() == KeyEvent.VK_A){
-            xkey=20;
-            ykey=30;
-        }
-        else if(e.getKeyCode() == KeyEvent.VK_S){
-            xkey=50;
-            ykey=30;
-        }
-        else if(e.getKeyCode() == KeyEvent.VK_D){
-            xkey=80;
-            ykey=30;
-        }
-        else if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
-           playState.isPaused=!playState.isPaused;
+        if (e.getKeyCode() == KeyEvent.VK_Q) {
+            xkey = 20;
+            ykey = 50;
+        } else if (e.getKeyCode() == KeyEvent.VK_W) {
+            xkey = 50;
+            ykey = 50;
+        } else if (e.getKeyCode() == KeyEvent.VK_E) {
+            xkey = 80;
+            ykey = 50;
+        } else if (e.getKeyCode() == KeyEvent.VK_A) {
+            xkey = 20;
+            ykey = 30;
+        } else if (e.getKeyCode() == KeyEvent.VK_S) {
+            xkey = 50;
+            ykey = 30;
+        } else if (e.getKeyCode() == KeyEvent.VK_D) {
+            xkey = 80;
+            ykey = 30;
+        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            playState.isPaused = !playState.isPaused;
         }
 
 
     }
+
+    private void initSounds() {
+        try {
+            // Load background music
+            AudioInputStream backgroundStream = AudioSystem.getAudioInputStream(
+                    new File("sounds/song.wav"));
+            backgroundMusic = AudioSystem.getClip();
+            backgroundMusic.open(backgroundStream);
+
+            // Load hammer sound
+            AudioInputStream hammerStream = AudioSystem.getAudioInputStream(
+                    new File("sounds/hammer.wav"));
+            hammerSound = AudioSystem.getClip();
+            hammerSound.open(hammerStream);
+
+            // Load win sound
+            AudioInputStream winStream = AudioSystem.getAudioInputStream(
+                    new File("sounds/win.wav"));
+            winSound = AudioSystem.getClip();
+            winSound.open(winStream);
+
+            // Load lose sound
+            AudioInputStream loseStream = AudioSystem.getAudioInputStream(
+                    new File("sounds/gameover.wav"));
+            loseSound = AudioSystem.getClip();
+            loseSound.open(loseStream);
+
+            // Set background music to loop continuously
+            backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+
+            // Optional: Adjust volume for background music to be quieter
+            FloatControl gainControl =
+                    (FloatControl) backgroundMusic.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-10.0f); // Reduce volume by 10 decibels
+
+        } catch (Exception e) {
+            System.out.println("Error loading sounds: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void playSound(Clip clip) {
+        if (clip != null) {
+            clip.setFramePosition(0); // Rewind to start
+            clip.start();
+        }
+    }
+
+    private void stopBackgroundMusic() {
+        if (backgroundMusic != null && backgroundMusic.isRunning()) {
+            backgroundMusic.stop();
+        }
+    }
+
+
 
     @Override
     public void keyReleased(KeyEvent e) {
 
     }
 }
+
