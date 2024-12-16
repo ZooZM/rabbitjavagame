@@ -31,6 +31,8 @@ public class RabbitGLEvrntListener extends RabbitListener {
     UserModel userModel;
     UserModel userModel2;
     ArrayList<ShapeModel> holes;
+    ArrayList<ShapeModel> buttons;
+
     ShapeModel hammer;
     ShapeModel pause;
     ShapeModel resume;
@@ -69,8 +71,21 @@ public class RabbitGLEvrntListener extends RabbitListener {
             }
         }
         gameState = new GameState();
+        gameState.setChooseMode();
 
-        gameState.setStartPlay();
+        buttons = new ArrayList<ShapeModel>();
+        buttons.add(new ShapeModel(50,70,6));
+        buttons.add(new ShapeModel(50,50,15));
+        buttons.add(new ShapeModel(10,90,8));
+        buttons.add(new ShapeModel(50,30,33)); // menu
+
+        buttons.add(new ShapeModel(50, 30, 12));
+        buttons.add(new ShapeModel(50, 70, 10));
+        buttons.add(new ShapeModel(50, 50, 11));
+        buttons.add(new ShapeModel(90,90,8));
+        buttons.add(new ShapeModel(90,90,13));
+
+
         playState = new PlayState(2);
         playState.setEasyMode();
         userModel = new UserModel("as",0);
@@ -106,28 +121,36 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
         switch (gameState.getGameState()) {
             case "start": {
-                DrawBackground(gl , 28);
-
-                DrawImage(gl, 50, 70, 6, 1.5f, 1f);
-                DrawImage(gl, 50, 50, 15, 1.5f, 1f);
-                DrawImage(gl, 90, 90, 8, 1f, 1f);
-                DrawImage(gl, 50, 30, 27, 1.7f, 2f);//back
+                DrawBackground(gl , 34);
+                for (int i = 0; i <2 ; i++){
+                    ShapeModel button = buttons.get(i);
+                    DrawImage(gl,button.x,button.y,button.index,1.5f,1);
+                }
+                ShapeModel button = buttons.get(3);
+                DrawImage(gl,button.x,button.y,button.index,1.9f,2f);
+                button = buttons.get(2);
+                DrawImage(gl,button.x,button.y,button.index,1f,1f);
 
             }
             break;
 
             case "instruction":
-                DrawBackground(gl , 26);
-                DrawImage(gl, 90, 90, 13, 1f, 1f);
+                DrawBackground(gl , 32);
+                ShapeModel button =buttons.get(8);
+                DrawImage(gl,button.x,button.y,button.index,1f,1f);
 
                 break;
 
             case "chooseMode":
-                DrawBackground(gl , 28);
-                DrawImage(gl, 50, 50, 11, 1.4f, 1f);
-                DrawImage(gl, 50, 70, 10, 1.4f, 1f);
-                DrawImage(gl, 50, 30, 12, 1.4f, 1f);
-                DrawImage(gl, 90, 90, 13, 1f, 1f);
+                DrawBackground(gl , 34);
+                for (int i = 4; i <7 ; i++) {
+                    button = buttons.get(i);
+                    DrawImage(gl,button.x,button.y,button.index,1.5f,1);
+                }
+                button = buttons.get(2);
+                DrawImage(gl,button.x,button.y,button.index,1f,1f);
+                button =buttons.get(8);
+                DrawImage(gl,button.x,button.y,button.index,1f,1f);
 
                 break;
 
