@@ -32,7 +32,7 @@ import java.io.*;
 import java.util.Random;
 
 public class RabbitGLEvrntListener extends RabbitListener {
-    public static final int MAX_WIDTH = 100, MAX_HEIGHT = 100; // set max height and width to translate sprites using integers
+    public static final int MAX_WIDTH = 100, MAX_HEIGHT = 100;
     int xClicked = 200;
     int yClicked = 200;
     int xMotion = 0, yMotion = 0;
@@ -52,10 +52,14 @@ public class RabbitGLEvrntListener extends RabbitListener {
     ShapeModel exit;
     ScoreModel score;
     ScoreModel score2;
+
+    ShapeModel soundButton;
+    private String soundsFolderPath = "src/sounds/";
     private Clip backgroundMusic;
     private Clip hammerSound;
     private Clip winSound;
     private Clip loseSound;
+    private boolean isSoundEnabled = true;
 
 
     String[] textureNames = new String[]{"rabbit2.png", "Hammer.png", "Hole.png", "Boom.png", "Hit.png",
@@ -72,6 +76,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
     @Override
     public void init(GLAutoDrawable glAutoDrawable) {
+        initSounds();
         GL gl = glAutoDrawable.getGL();
         gl.glClearColor(1.0F, 1.0F, 1.0F, 1.0F);
         gl.glEnable(3553);
@@ -90,10 +95,6 @@ public class RabbitGLEvrntListener extends RabbitListener {
         }
         gameState = new GameState();
 
-        // Remove this line
-        // gameState.setChooseMode();
-
-        // Start with Start Screen
         gameState.setStart();
 
         playState = new PlayState(2);
@@ -103,6 +104,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
         score = new ScoreModel(userModel, 0, 7);
         score2 = new ScoreModel(userModel2, 0, 7);
         pause = new ShapeModel(92, 92, textureNames.length - 4);
+        soundButton = new ShapeModel(90, 90, 8);
         resume = new ShapeModel(50, 70, textureNames.length - 10);
         restart = new ShapeModel(50, 50, textureNames.length - 11);
         exit = new ShapeModel(50, 30, 7);
@@ -134,11 +136,11 @@ public class RabbitGLEvrntListener extends RabbitListener {
             case "start": {
                 DrawBackground(gl, 34);
 
+                DrawImage(gl, soundButton.x, soundButton.y, soundButton.index, 0.5f, 0.5f);
                 DrawImage(gl, 50, 70, 6, 1.5f, 1f);
                 DrawImage(gl, 50, 50, 15, 1.5f, 1f);
                 DrawImage(gl, 90, 90, 8, 1f, 1f);
-                DrawImage(gl, 50, 30, 33, 1.7f, 2f);//back
-
+                DrawImage(gl, 50, 30, 33, 1.7f, 2f);
             }
             break;
 
@@ -381,13 +383,19 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
         switch (gameState.getGameState()) {
             case "start": {
-                // Handle clicks on start screen
+
+                if (isCatch(xClicked, yClicked, soundButton.x, soundButton.y, 5)) {
+                    toggleSound();
+                     soundButton.index = isSoundEnabled ? 8 : 9;
+                    return;
+                }
+
                 if (isCatch(xClicked, yClicked, 50, 70, 8)) { // Play button
                     gameState.setChooseMode();
                 } else if (isCatch(xClicked, yClicked, 50, 50, 8)) { // Instructions button
                     gameState.setInstruction();
                 } else if (isCatch(xClicked, yClicked, 50, 30, 8)) { // Levels button
-                    gameState.setChooseMode(); // This will take us to the choose mode screen
+                    gameState.setChooseMode();
                 } else if (isCatch(xClicked, yClicked, 90, 90, 5)) { // Exit button
                     System.exit(0);
                 }
@@ -395,15 +403,14 @@ public class RabbitGLEvrntListener extends RabbitListener {
             break;
 
             case "instruction": {
-                // Handle clicks on instruction screen
-                if (isCatch(xClicked, yClicked, 90, 90, 5)) { // Back button
+                 if (isCatch(xClicked, yClicked, 90, 90, 5)) { // Back button
                     gameState.setStart();
                 }
             }
             break;
 
             case "chooseMode": {
-                // Handle clicks on mode selection screen
+
                 if (isCatch(xClicked, yClicked, 50, 70, 8)) { // Easy mode
                     playState.setEasyMode();
                     gameState.setStartPlay();
@@ -423,7 +430,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
             break;
             case "startPlay": {
                 if (playState.isLose) {
-                    // Handle lose state
+
                 } else if (playState.isPaused) {
                     if (isCatch(xClicked, yClicked, pause.x, pause.y, 5)) {
                         playState.isPaused = !playState.isPaused;
@@ -443,11 +450,9 @@ public class RabbitGLEvrntListener extends RabbitListener {
                         System.out.println("Restart");
                     }
                     if (isCatch(xClicked, yClicked, exit.x, exit.y, 8)) {
-                        // Reset game state and return to start screen
-                        gameState.setStart();
+                         gameState.setStart();
                         playState.isPaused = false;
-                        // Reset scores and lives for next game
-                        score.user.lives = 7;
+                         score.user.lives = 7;
                         score.user.score = 0;
                         score2.user.lives = 7;
                         score2.user.score = 0;
@@ -495,6 +500,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
     public void mousePressed(MouseEvent e) {
         if (!(playState.isLose || playState.isPaused)) {
             hammer.index = textureNames.length - 7;
+            playSound(hammerSound);
         }
     }
 
@@ -569,48 +575,96 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
     private void initSounds() {
         try {
-            // Load background music
-            AudioInputStream backgroundStream = AudioSystem.getAudioInputStream(
-                    new File("sounds/song.wav"));
+
+            File backgroundFile = new File(soundsFolderPath + "song.wav");
+            if (!backgroundFile.exists()) {
+                System.out.println("Warning: Background music file not found at: " + backgroundFile.getAbsolutePath());
+                return;
+            }
+
+            AudioInputStream backgroundStream = AudioSystem.getAudioInputStream(backgroundFile);
             backgroundMusic = AudioSystem.getClip();
             backgroundMusic.open(backgroundStream);
 
-            // Load hammer sound
-            AudioInputStream hammerStream = AudioSystem.getAudioInputStream(
-                    new File("sounds/hammer.wav"));
+
+
+            File hammerFile = new File(soundsFolderPath + "hammer.wav");
+            if (!hammerFile.exists()) {
+                System.out.println("Warning: Hammer sound file not found at: " + hammerFile.getAbsolutePath());
+                return;
+            }
+
+            AudioInputStream hammerStream = AudioSystem.getAudioInputStream(hammerFile);
             hammerSound = AudioSystem.getClip();
             hammerSound.open(hammerStream);
 
-            // Load win sound
-            AudioInputStream winStream = AudioSystem.getAudioInputStream(
-                    new File("sounds/win.wav"));
+
+            File winFile = new File(soundsFolderPath + "win.wav");
+            if (!winFile.exists()) {
+                System.out.println("Warning: Win sound file not found at: " + winFile.getAbsolutePath());
+                return;
+            }
+
+            AudioInputStream winStream = AudioSystem.getAudioInputStream(winFile);
             winSound = AudioSystem.getClip();
             winSound.open(winStream);
 
-            // Load lose sound
-            AudioInputStream loseStream = AudioSystem.getAudioInputStream(
-                    new File("sounds/gameover.wav"));
+
+            File loseFile = new File(soundsFolderPath + "gameover.wav");
+            if (!loseFile.exists()) {
+                System.out.println("Warning: Game over sound file not found at: " + loseFile.getAbsolutePath());
+                return;
+            }
+
+            AudioInputStream loseStream = AudioSystem.getAudioInputStream(loseFile);
             loseSound = AudioSystem.getClip();
             loseSound.open(loseStream);
 
-            // Set background music to loop continuously
-            backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
 
-            // Optional: Adjust volume for background music to be quieter
-            FloatControl gainControl =
-                    (FloatControl) backgroundMusic.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-10.0f); // Reduce volume by 10 decibels
+            if (backgroundMusic != null) {
+                backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+
+//                FloatControl gainControl = (FloatControl) backgroundMusic.getControl(FloatControl.Type.MASTER_GAIN);
+//                gainControl.setValue(-10.0f);
+            }
 
         } catch (Exception e) {
-            System.out.println("Error loading sounds: " + e.getMessage());
+            System.out.println("Error initializing sounds: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
     private void playSound(Clip clip) {
-        if (clip != null) {
-            clip.setFramePosition(0); // Rewind to start
-            clip.start();
+        if (clip != null && isSoundEnabled) {
+            try {
+                clip.setFramePosition(0);
+                clip.start();
+            } catch (Exception e) {
+                System.out.println("Error playing sound: " + e.getMessage());
+            }
+        }
+    }
+
+    public void toggleSound() {
+        isSoundEnabled = !isSoundEnabled;
+        if (!isSoundEnabled) {
+            stopAllSounds();
+        } else if (backgroundMusic != null) {
+            backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+        }
+    }
+
+    private void stopAllSounds() {
+        if (backgroundMusic != null && backgroundMusic.isRunning()) {
+            backgroundMusic.stop();
+        }
+        if (hammerSound != null && hammerSound.isRunning()) {
+            hammerSound.stop();
+        }
+        if (winSound != null && winSound.isRunning()) {
+            winSound.stop();
+        }
+        if (loseSound != null && loseSound.isRunning()) {
+            loseSound.stop();
         }
     }
 
@@ -618,6 +672,14 @@ public class RabbitGLEvrntListener extends RabbitListener {
         if (backgroundMusic != null && backgroundMusic.isRunning()) {
             backgroundMusic.stop();
         }
+    }
+    private void handleGameOver(boolean won) {
+        if (won) {
+            playSound(winSound);
+        } else {
+            playSound(loseSound);
+        }
+        stopBackgroundMusic();
     }
 
 
