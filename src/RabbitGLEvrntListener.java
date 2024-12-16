@@ -383,19 +383,31 @@ public class RabbitGLEvrntListener extends RabbitListener {
             case "start": {
                 // Handle clicks on start screen
                 if (isCatch(xClicked, yClicked, 50, 70, 8)) { // Play button
-                    String playerName;
+                    String playerName = null;
+                    boolean validInput = false;
+
                     do {
                         playerName = JOptionPane.showInputDialog(null, "Enter your name:", "Player Name", JOptionPane.PLAIN_MESSAGE);
 
-                        if (playerName == null || playerName.trim().isEmpty()) {
-                            JOptionPane.showMessageDialog(null, "Name cannot be empty. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+                        if (playerName != null && !playerName.trim().isEmpty()) {
+                            validInput = true; // Input is valid
+                            userModel = new UserModel(playerName.trim(), 0); // Save the player's name
+                            System.out.println(userModel);
+                            gameState.setChooseMode(); // Proceed to the next state
+                        } else {
+                            int choice = JOptionPane.showConfirmDialog(
+                                    null,
+                                    "Name cannot be empty. Would you like to try again?",
+                                    "Error",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+
+                            if (choice == JOptionPane.NO_OPTION || choice == JOptionPane.CLOSED_OPTION) {
+                                break; // Exit the loop if the user selects "No" or closes the dialog
+                            }
                         }
-                    } while (playerName == null || playerName.trim().isEmpty());
-
-                    userModel = new UserModel(playerName.trim(), 0); // Save the player's name
-
-                    gameState.setChooseMode(); // Proceed to the next state
-
+                    } while (!validInput);
                 } else if (isCatch(xClicked, yClicked, 50, 50, 8)) { // Instructions button
                     gameState.setInstruction();
                 } else if (isCatch(xClicked, yClicked, 50, 30, 8)) { // Levels button
