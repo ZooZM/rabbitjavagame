@@ -30,8 +30,10 @@ public class RabbitGLEvrntListener extends RabbitListener {
     PlayState playState;
     UserModel userModel;
     UserModel userModel2;
-    CollisionManger collisionManger;
     ArrayList<ShapeModel> holes;
+    ArrayList<ShapeModel> buttons;
+
+
     ShapeModel hammer;
     ShapeModel pause;
     ShapeModel resume;
@@ -41,12 +43,13 @@ public class RabbitGLEvrntListener extends RabbitListener {
     ScoreModel score2 ;
 
 
+
     String[] textureNames = new String[]{"rabbit2.png", "Hammer.png", "Hole.png", "Boom.png", "Hit.png"
             , "Back.jpeg", "play.png", "exit.png", "soundOn.png", "soundOff.png",
             "easy.png", "medium.png", "hard.png", "backbtn.png", "hammer3.png", "HowToPlay.png",
-            "playAgain.png","q.png","w.png","e.png","a.png","s.png","d.png",
-            "home.png", "restart.png", "resume.png", "Back1.png",
-            "Hamme2r.png", "Hamer3.png", "Hammer4.png", "gameOver.png", "puase.png", "ins.png" , "levels.png","Back.png"};
+            "playAgain.png", "home.png", "restart.png", "resume.png", "Back1.png",
+            "Hamme2r.png", "Hamer3.png", "Hammer4.png", "gameOver.png", "puase.png", "ins.png" , "levels.png","Back.png",
+            "q.png","w.png","e.png","a.png","s.png","d.png"};
 
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
     int[] textures = new int[textureNames.length];
@@ -71,16 +74,29 @@ public class RabbitGLEvrntListener extends RabbitListener {
         }
         gameState = new GameState();
 
+//        gameState.setStartPlay();
         gameState.setStartPlay();
+        buttons = new ArrayList<ShapeModel>();
+        buttons.add(new ShapeModel(50,70,6));
+        buttons.add(new ShapeModel(50,50,15));
+        buttons.add(new ShapeModel(10,90,8));
+        buttons.add(new ShapeModel(50,35,27)); // menu
+
+        buttons.add(new ShapeModel(50, 30, 12));
+        buttons.add(new ShapeModel(50, 70, 10));
+        buttons.add(new ShapeModel(50, 50, 11));
+        buttons.add(new ShapeModel(90,90,8));
+        buttons.add(new ShapeModel(90,90,13));
+
         playState = new PlayState(2);
         playState.setEasyMode();
         userModel = new UserModel("as",0);
         userModel2 = new UserModel("mm",0);
         score = new ScoreModel(userModel,0,7);
         score2 = new ScoreModel(userModel2,0,7);
-        pause=new ShapeModel(92,92,textureNames.length-4);
-        resume=new ShapeModel(50,70,textureNames.length-10);
-        restart=new ShapeModel(50,50,textureNames.length-11);
+        pause=new ShapeModel(92,92,25);
+        resume=new ShapeModel(50,70,19);
+        restart=new ShapeModel(50,50,18);
         exit=new ShapeModel(50,30,7);
 
         holes = new ArrayList<ShapeModel>();
@@ -108,36 +124,50 @@ public class RabbitGLEvrntListener extends RabbitListener {
         switch (gameState.getGameState()) {
             case "start": {
                 DrawBackground(gl , 28);
+                for (int i = 0; i <2 ; i++) {
+                    ShapeModel button = buttons.get(i);
 
-                DrawImage(gl, 50, 70, 6, 1.5f, 1f);
-                DrawImage(gl, 50, 50, 15, 1.5f, 1f);
-                DrawImage(gl, 90, 90, 8, 1f, 1f);
-                DrawImage(gl, 50, 30, 27, 1.7f, 2f);//back
+                    DrawImage(gl,button.x,button.y,button.index,1.5f,1);
+                }
+                ShapeModel button = buttons.get(3);
+                DrawImage(gl,button.x,button.y,button.index,1.9f,1.8f);
+                button = buttons.get(2);
+                DrawImage(gl,button.x,button.y,button.index,1f,1f);
 
             }
             break;
 
             case "instruction":
                 DrawBackground(gl , 26);
-                DrawImage(gl, 90, 90, 13, 1f, 1f);
+               ShapeModel button =buttons.get(8);
+                DrawImage(gl,button.x,button.y,button.index,1f,1f);
+
 
                 break;
 
             case "chooseMode":
                 DrawBackground(gl , 28);
-                DrawImage(gl, 50, 50, 11, 1.4f, 1f);
-                DrawImage(gl, 50, 70, 10, 1.4f, 1f);
-                DrawImage(gl, 50, 30, 12, 1.4f, 1f);
-                DrawImage(gl, 90, 90, 13, 1f, 1f);
+                for (int i = 4; i <7 ; i++) {
+                    button = buttons.get(i);
+
+                    DrawImage(gl,button.x,button.y,button.index,1.5f,1);
+                }
+              button = buttons.get(2);
+
+                DrawImage(gl,button.x,button.y,button.index,1f,1f);
+                button =buttons.get(8);
+                DrawImage(gl,button.x,button.y,button.index,1f,1f);
 
                 break;
+
+
 
             case "chooseNumberOfPlayers":
 
                 break;
 
             case "startPlay":
-                DrawBackground(gl , 26);
+                DrawBackground(gl , 20);
             {
                 if (playState.isLose) {
 
@@ -192,27 +222,27 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                         drawWord(gl,-0.9F,0.7f,"Lives", (long) score.user.lives);
                     }else{
-                            hammer.x = xMotion+5;
-                            hammer.y = yMotion+1;
-                            DrawImage(gl, hammer.x, hammer.y ,hammer.index,0.8f,0.8f);
-                            drawWord(gl,-0.9F,0.9f,"Timer", elapsedTimeSeconds);
+                        hammer.x = xMotion+5;
+                        hammer.y = yMotion+1;
+                        DrawImage(gl, hammer.x, hammer.y ,hammer.index,0.8f,0.8f);
+                        drawWord(gl,-0.9F,0.9f,"Timer", elapsedTimeSeconds);
 
-                            drawWord(gl,0.5F,0.8f,"Score", (long) score.user.score);
+                        drawWord(gl,0.5F,0.8f,"Score", (long) score.user.score);
 
-                            drawWord(gl,0.5F,0.7f,"Lives", (long) score.user.lives);
+                        drawWord(gl,0.5F,0.7f,"Lives", (long) score.user.lives);
 
-                            drawWord(gl,-0.9F,0.8f,"Score2", (long) score2.user.score);
+                        drawWord(gl,-0.9F,0.8f,"Score2", (long) score2.user.score);
 
-                            drawWord(gl,-0.9F,0.7f,"Lives2", (long) score2.user.lives);
+                        drawWord(gl,-0.9F,0.7f,"Lives2", (long) score2.user.lives);
 
 
                         //--------------------------------------------------MultiPlayer--------------------------------------------------
-                        DrawImage(gl ,20 , 40 ,17 ,0.4f , 0.4f);//Q
-                        DrawImage(gl , 50, 40 ,18 ,0.4f , 0.4f);//W
-                        DrawImage(gl , 80, 40 ,19 ,0.4f , 0.4f);//E
-                        DrawImage(gl , 20, 20 ,20 ,0.4f , 0.4f);//A
-                        DrawImage(gl , 50, 20 ,21 ,0.4f , 0.4f);//S
-                        DrawImage(gl , 80, 20 ,22 ,0.4f , 0.4f);//D
+                        DrawImage(gl ,20 , 40 ,29,0.4f , 0.4f);//Q
+                        DrawImage(gl , 50, 40 ,30 ,0.4f , 0.4f);//W
+                        DrawImage(gl , 80, 40 ,31 ,0.4f , 0.4f);//E
+                        DrawImage(gl , 20, 20 ,32 ,0.4f , 0.4f);//A
+                        DrawImage(gl , 50, 20 ,33 ,0.4f , 0.4f);//S
+                        DrawImage(gl , 80, 20 ,34 ,0.4f , 0.4f);//D
 
 
                         DrawImage(gl , xkey ,ykey,1 ,-1f , 1f);
@@ -438,15 +468,15 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 break;
         }
     }
-            boolean isCatch(int xclicked,int yclicked,int x, int y, int r){
-                return (xclicked<=(x+r)&&xclicked>=(x-r)&&yclicked<=(y+r)&&yclicked>=(y-r));
-            }
+    boolean isCatch(int xclicked,int yclicked,int x, int y, int r){
+        return (xclicked<=(x+r)&&xclicked>=(x-r)&&yclicked<=(y+r)&&yclicked>=(y-r));
+    }
 
     @Override
     public void mousePressed(MouseEvent e) {
-    if(!(playState.isLose || playState.isPaused)){
-        hammer.index = textureNames.length -7;
-    }
+        if(!(playState.isLose || playState.isPaused)){
+            hammer.index = 23;
+        }
     }
 
     @Override
@@ -518,7 +548,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
             ykey=30;
         }
         else if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
-           playState.isPaused=!playState.isPaused;
+            playState.isPaused=!playState.isPaused;
         }
 
 
