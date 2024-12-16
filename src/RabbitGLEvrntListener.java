@@ -84,6 +84,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
         buttons.add(new ShapeModel(50, 50, 11));
         buttons.add(new ShapeModel(90,90,8));
         buttons.add(new ShapeModel(90,90,13));
+        buttons.add(new ShapeModel(50,10,7));
 
 
         playState = new PlayState(2);
@@ -124,12 +125,14 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 DrawBackground(gl , 34);
                 for (int i = 0; i <2 ; i++){
                     ShapeModel button = buttons.get(i);
-                    DrawImage(gl,button.x,button.y,button.index,1.5f,1);
+                    DrawImage(gl,button.x,button.y+10,button.index,1.5f,1);
                 }
                 ShapeModel button = buttons.get(3);
-                DrawImage(gl,button.x,button.y,button.index,1.9f,2f);
+                DrawImage(gl,button.x,button.y+10,button.index,1.9f,2f);
                 button = buttons.get(2);
                 DrawImage(gl,button.x,button.y,button.index,1f,1f);
+                button = buttons.get(9);
+                DrawImage(gl,button.x,button.y+10,button.index,1.5f,.9f);
 
             }
             break;
