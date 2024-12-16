@@ -71,7 +71,8 @@ public class RabbitGLEvrntListener extends RabbitListener {
             }
         }
         gameState = new GameState();
-        gameState.setChooseMode();
+//        gameState.setChooseMode();
+        gameState.setStartPlay();
 
         buttons = new ArrayList<ShapeModel>();
         buttons.add(new ShapeModel(50,70,6));
@@ -165,6 +166,22 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 DrawBackground(gl , 26);
             {
                 if (playState.isLose) {
+                    if(playState.numOfPlayers == 1) {
+
+                        DrawImage(gl, 50, 60, textureNames.length - 5, 5f, 5f);
+                        drawWord(gl, -0.18F, -0.3f, "High Score", (long) score.highScore);
+                        DrawImage(gl, 50, 20, 16, 1f, 0.8f);
+                        DrawImage(gl, 50, 7,  7, 1f, 0.8f);
+                    }
+                    else {
+                        DrawImage(gl, 50, 60, textureNames.length - 5, 5f, 5f);
+                        drawWord(gl, -0.18F, -0.3f, "High Score", (long) score.highScore);
+                        // if multi
+                        drawWord(gl, -0.18F, -0.4f, "High Score2", (long) score2.highScore);
+                        //if multi
+                        DrawImage(gl, 50, 20, 16, 1f, 0.8f);
+                        DrawImage(gl, 50, 7,  7, 1f, 0.8f);
+                    }
 
 
                 } else if (playState.isPaused) {

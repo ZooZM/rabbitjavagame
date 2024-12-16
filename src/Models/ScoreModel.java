@@ -2,7 +2,7 @@ package Models;
 
 public class ScoreModel {
     public UserModel user;
-    int highScore;
+    public int highScore;
 
 
     public ScoreModel(UserModel user, int highScore, int lives) {
