@@ -412,9 +412,11 @@ public class RabbitGLEvrntListener extends RabbitListener {
                     gameState.setInstruction();
                 } else if (isCatch(xClicked, yClicked, 50, 30, 8)) { // Levels button
                     gameState.setChooseMode(); // This will take us to the choose mode screen
-                } else if (isCatch(xClicked, yClicked, 90, 90, 5)) { // Exit button
-                    System.exit(0);
                 }
+                else if (isCatch(xClicked, yClicked, 90, 90, 5)) { // Exit button
+                            System.exit(0); // Exit if user confirms
+                }
+
             }
             break;
 
@@ -466,17 +468,60 @@ public class RabbitGLEvrntListener extends RabbitListener {
                         playState.sTimer = System.currentTimeMillis();
                         System.out.println("Restart");
                     }
-                    if (isCatch(xClicked, yClicked, exit.x, exit.y, 8)) {
-                        // Reset game state and return to start screen
-                        gameState.setStart();
-                        playState.isPaused = false;
-                        // Reset scores and lives for next game
-                        score.user.lives = 7;
-                        score.user.score = 0;
-                        score2.user.lives = 7;
-                        score2.user.score = 0;
-                        System.out.println("Return to Start Screen");
+                    if (isCatch(xClicked, yClicked, exit.x, exit.y, 8)) { // Exit button
+                        if (userModel != null && userModel.username != null && !userModel.username.trim().isEmpty()) {
+                            // Ask with player's name
+                            int choice = JOptionPane.showConfirmDialog(
+                                    null,
+                                     userModel.username + ", "+"Do you want to exit to the home page? ",
+                                    "Exit Confirmation",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE
+                            );
+
+                            if (choice == JOptionPane.YES_OPTION) {
+                                // Reset game state and return to start screen
+                                gameState.setStart();
+                                playState.isPaused = false;
+
+                                // Reset scores and lives for the next game
+                                score.user.lives = 7;
+                                score.user.score = 0;
+                                score2.user.lives = 7;
+                                score2.user.score = 0;
+
+                                System.out.println("Returned to Start Screen");
+                            } else {
+                                System.out.println(userModel.username + " choose to stay in the game.");
+                            }
+                        } else {
+                            // Default confirmation if player name is not available
+                            int choice = JOptionPane.showConfirmDialog(
+                                    null,
+                                    "Do you want to exit to the home page?",
+                                    "Exit Confirmation",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE
+                            );
+
+                            if (choice == JOptionPane.YES_OPTION) {
+                                // Reset game state and return to start screen
+                                gameState.setStart();
+                                playState.isPaused = false;
+
+                                // Reset scores and lives for the next game
+                                score.user.lives = 7;
+                                score.user.score = 0;
+                                score2.user.lives = 7;
+                                score2.user.score = 0;
+
+                                System.out.println("Returned to Start Screen");
+                            } else {
+                                System.out.println("User choose to stay in the game.");
+                            }
+                        }
                     }
+
                 } else {
                     if (isCatch(xClicked, yClicked, pause.x, pause.y, 5)) {
                         playState.isPaused = !playState.isPaused;
