@@ -448,6 +448,15 @@ public class RabbitGLEvrntListener extends RabbitListener {
                         // if multi
                         playState.sTimer =System.currentTimeMillis();
                     }
+                    if (isCollision(xClicked, yClicked, 50, 7, 8)) {
+                        gameState.setStart();
+                        playState.isPaused = false;
+                        score.user.lives = 7;
+                        score.user.score = 0;
+                        score2.user.lives = 7;
+                        score2.user.score = 0;
+                        System.out.println("Return to Start Screen");
+                    }
 
 
                 } else if (playState.isPaused) {
