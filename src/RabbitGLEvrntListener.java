@@ -94,10 +94,28 @@ public class RabbitGLEvrntListener extends RabbitListener {
             }
         }
         gameState = new GameState();
+<<<<<<< HEAD
+=======
+//        gameState.setChooseMode();
+        gameState.setStartPlay();
+
+        buttons = new ArrayList<ShapeModel>();
+        buttons.add(new ShapeModel(50,70,6));
+        buttons.add(new ShapeModel(50,50,15));
+        buttons.add(new ShapeModel(10,90,8));
+        buttons.add(new ShapeModel(50,30,33)); // menu
+
+        buttons.add(new ShapeModel(50, 30, 12));
+        buttons.add(new ShapeModel(50, 70, 10));
+        buttons.add(new ShapeModel(50, 50, 11));
+        buttons.add(new ShapeModel(90,90,8));
+        buttons.add(new ShapeModel(90,90,13));
+        buttons.add(new ShapeModel(50,10,7));
+>>>>>>> 81d774b7a2e5ae4a74fd3da414fcd738a19f1181
 
         gameState.setStart();
 
-        playState = new PlayState(2);
+        playState = new PlayState(1);
         playState.setEasyMode();
         userModel = new UserModel("as", 0);
         userModel2 = new UserModel("mm", 0);
@@ -167,6 +185,22 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 DrawBackground(gl, 26);
             {
                 if (playState.isLose) {
+                    if(playState.numOfPlayers == 1) {
+
+                        DrawImage(gl, 50, 60, textureNames.length - 5, 5f, 5f);
+                        drawWord(gl, -0.18F, -0.3f, "High Score", (long) score.highScore);
+                        DrawImage(gl, 50, 20, 16, 1f, 0.8f);
+                        DrawImage(gl, 50, 7,  7, 1f, 0.8f);
+                    }
+                    else {
+                        DrawImage(gl, 50, 60, textureNames.length - 5, 5f, 5f);
+                        drawWord(gl, -0.18F, -0.3f, "High Score", (long) score.highScore);
+                        // if multi
+                        drawWord(gl, -0.18F, -0.4f, "High Score2", (long) score2.highScore);
+                        //if multi
+                        DrawImage(gl, 50, 20, 16, 1f, 0.8f);
+                        DrawImage(gl, 50, 7,  7, 1f, 0.8f);
+                    }
 
 
                 } else if (playState.isPaused) {
@@ -430,6 +464,26 @@ public class RabbitGLEvrntListener extends RabbitListener {
             break;
             case "startPlay": {
                 if (playState.isLose) {
+                    if(isCollision(xClicked,yClicked,50,20,10)){
+                        playState.isLose =false;
+                        score.user.lives = 7;
+                        score.user.score=0;
+                        // if multi
+                        score2.user.lives = 7;
+                        score2.user.score=0;
+                        // if multi
+                        playState.sTimer =System.currentTimeMillis();
+                    }
+                    if (isCollision(xClicked, yClicked, 50, 7, 8)) {
+                        gameState.setStart();
+                        playState.isPaused = false;
+                        score.user.lives = 7;
+                        score.user.score = 0;
+                        score2.user.lives = 7;
+                        score2.user.score = 0;
+                        System.out.println("Return to Start Screen");
+                    }
+
 
                 } else if (playState.isPaused) {
                     if (isCatch(xClicked, yClicked, pause.x, pause.y, 5)) {
