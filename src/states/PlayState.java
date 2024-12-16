@@ -8,6 +8,8 @@ public class PlayState {
     public  int gameSpeed;
     public int numOfPlayers;
     public int levelUp;
+    public int c = 10  , d = 10;
+
     public PlayState(int numOfPlayers){
         this.numOfPlayers=numOfPlayers;
         isPaused=false;
@@ -28,6 +30,15 @@ public class PlayState {
     public void setHardMode(){
         this.gameSpeed=10;
         levelUp=3;
+    }
+    public void setLevelUp(){
+        int  i = gameSpeed- levelUp;
+        if(i>0){
+            gameSpeed= gameSpeed - levelUp;
+            System.out.println("speed up");
+            c+=10;
+            d+=10;
+        }
     }
     public void setLose() {
         isLose = true;
