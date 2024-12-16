@@ -152,6 +152,9 @@ public class RabbitGLEvrntListener extends RabbitListener {
                     //--------------------------------------------------Pause menu--------------------------------------------------
 
                 } else {
+
+                    LevelUp();
+
                     DrawImage(gl, pause.x, pause.y,pause.index,0.75f,0.75f);
 
                     currentTimeMillis = System.currentTimeMillis();
@@ -215,32 +218,9 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
 
                         DrawImage(gl , xkey ,ykey,1 ,-1f , 1f);
-                        for(Models.ShapeModel hole:holes){
-                            if(isCatch(xkey,ykey,hole.x,hole.y,6)&&hole.hasRabbit){
-                                hole.isBoom =true;
-                                hole.hasRabbit = false;
-                                generateRabbit();
-                                speed = 0;
-                                score2.user.score++;
-                                score2.setHighScore(score2.user.score);
-                                System.out.println(xkey +" "+ykey);
-                                System.out.println("Catch");
-                                xkey=10;
-                                ykey=50;
-
-                            }
-                            else if (isCatch(xkey, ykey, hole.x, hole.y, 6)) {
-                                if(score2.user.isLose()){
-                                    playState.setLose();
-                                }
-                                score2.itFall();
-                                xkey=10;
-                                ykey=50;
-                                System.out.println("fall");
-                            }
-
-                        }
+                        MultiPlayer();
                         //--------------------------------------------------MultiPlayer--------------------------------------------------
+
 
                     }
 
@@ -257,6 +237,51 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
 
     }
+    //--------------------------------------------------Level Up--------------------------------------------------
+    void LevelUp(){
+        int c = playState.c;
+        int d = playState.d;
+        if(playState.numOfPlayers == 1){
+            if((score.user.score+1)%d==0) {
+                playState.setLevelUp();
+            }
+        }
+        else {
+            if((score2.user.score+1)%c==0||(score.user.score+1)%d==0) {
+                playState.setLevelUp();
+            }
+        }
+    }
+    //--------------------------------------------------Level Up--------------------------------------------------
+    //--------------------------------------------------MultiPlayer--------------------------------------------------
+    void MultiPlayer(){
+//        LevelUp();
+        for(Models.ShapeModel hole:holes){
+            if(isCollision(xkey,ykey,hole.x,hole.y,6)&&hole.hasRabbit){
+                hole.isBoom =true;
+                hole.hasRabbit = false;
+                generateRabbit();
+                speed = 0;
+                score2.user.score++;
+                score2.setHighScore(score2.user.score);
+                System.out.println(xkey +" "+ykey);
+                System.out.println("Catch");
+                xkey=10;
+                ykey=50;
+            }
+            else if (isCollision(xkey, ykey, hole.x, hole.y, 6)) {
+                if(score2.user.isLose()){
+                    playState.setLose();
+                }
+                score2.itFall();
+                xkey=10;
+                ykey=50;
+                System.out.println("fall");
+            }
+        }
+    }
+    //--------------------------------------------------MultiPlayer--------------------------------------------------
+    
 
 
     int previousNum = -1;
@@ -373,18 +398,18 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                 } else if (playState.isPaused) {
 
-                    if(isCatch(xClicked,yClicked, pause.x, pause.y,5)){
+                    if(isCollision(xClicked,yClicked, pause.x, pause.y,5)){
                         playState.isPaused= !playState.isPaused;
                         System.out.println("Resume");
 
                     }
 
-                    if(isCatch(xClicked,yClicked,resume.x, resume.y, 8)){
+                    if(isCollision(xClicked,yClicked,resume.x, resume.y, 8)){
                         playState.isPaused= false;
                         System.out.println("Resume");
 
                     }
-                    if(isCatch(xClicked,yClicked, restart.x, restart.y, 8)){
+                    if(isCollision(xClicked,yClicked, restart.x, restart.y, 8)){
                         playState.isPaused= false;
                         score.user.lives = 7;
                         score.user.score=0;
@@ -396,7 +421,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
                         System.out.println("Restart");
 
                     }
-                    if(isCatch(xClicked,yClicked,exit.x, exit.y, 8)){
+                    if(isCollision(xClicked,yClicked,exit.x, exit.y, 8)){
                         System.out.println("Exit");
 
                     }
@@ -405,14 +430,14 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                 } else {
 
-                    if(isCatch(xClicked,yClicked, pause.x, pause.y, 5)){
+                    if(isCollision(xClicked,yClicked, pause.x, pause.y, 5)){
                         playState.isPaused= !playState.isPaused;
                         System.out.println("Resume");
 
                     }
                     int r =6;
                     for (ShapeModel holeAxis : holes) {
-                        if (isCatch(xClicked, yClicked, holeAxis.x, holeAxis.y, r) && holeAxis.hasRabbit) {
+                        if (isCollision(xClicked, yClicked, holeAxis.x, holeAxis.y, r) && holeAxis.hasRabbit) {
                             holeAxis.isBoom=true;
                             holeAxis.hasRabbit = false;
                             generateRabbit();
@@ -420,7 +445,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
                             score.user.score++;
                             score.setHighScore(score.user.score);
                             System.out.println("Catch");
-                        }else if (isCatch(xClicked, yClicked, holeAxis.x, holeAxis.y, r)) {
+                        }else if (isCollision(xClicked, yClicked, holeAxis.x, holeAxis.y, r)) {
                             if(score.user.isLose()){
                                 playState.setLose();
                             }
@@ -437,7 +462,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 break;
         }
     }
-            boolean isCatch(int xclicked,int yclicked,int x, int y, int r){
+            boolean isCollision(int xclicked,int yclicked,int x, int y, int r){
                 return (xclicked<=(x+r)&&xclicked>=(x-r)&&yclicked<=(y+r)&&yclicked>=(y-r));
             }
 

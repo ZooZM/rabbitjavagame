@@ -8,7 +8,7 @@ public class PlayState {
     public  int gameSpeed;
     public int numOfPlayers;
     public int levelUp;
-    public int c = 10  , d = 10;
+    public int c = 11  , d = 11;
 
     public PlayState(int numOfPlayers){
         this.numOfPlayers=numOfPlayers;
