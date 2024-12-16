@@ -2,7 +2,7 @@ package Models;
 
 public class UserModel {
     public int score;
-    String username;
+    public String username;
     public int lives;
 
     public UserModel(String username, int score) {
