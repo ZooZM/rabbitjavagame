@@ -7,6 +7,7 @@ public class PlayState {
     public boolean isPlay;
     public  int gameSpeed;
     public int numOfPlayers;
+    public int levelUp;
     public PlayState(int numOfPlayers){
         this.numOfPlayers=numOfPlayers;
         isPaused=false;
@@ -17,13 +18,16 @@ public class PlayState {
         isPaused = true;
     }
     public void setEasyMode(){
-        this.gameSpeed=40;
+        this.gameSpeed=30;
+        levelUp = 10;
     }
     public void setMediumMode(){
-        this.gameSpeed=60;
+        this.gameSpeed=20;
+        levelUp=5;
     }
     public void setHardMode(){
-        this.gameSpeed=80;
+        this.gameSpeed=10;
+        levelUp=3;
     }
     public void setLose() {
         isLose = true;
