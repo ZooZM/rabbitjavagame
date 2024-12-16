@@ -63,7 +63,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
             "easy.png", "medium.png", "hard.png", "backbtn.png", "hammer3.png", "HowToPlay.png",
             "playAgain.png", "q.png", "w.png", "e.png", "a.png", "s.png", "d.png",
             "home.png", "restart.png", "resume.png", "Back1.png",
-            "Hamme2r.png", "Hamer3.png", "Hammer4.png", "gameOver.png", "puase.png", "ins.png",
+            "Hamme2r.png", "Hamer3.png", "Hammer4.png", "gameOver.png", "puase.png", "inst.jpg",
             "levels.png", "Back.png"};
 
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
@@ -96,7 +96,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
         // Start with Start Screen
         gameState.setStart();
 
-        playState = new PlayState(2);
+        playState = new PlayState(1);
         playState.setEasyMode();
         userModel = new UserModel("as", 0);
         userModel2 = new UserModel("mm", 0);
@@ -383,7 +383,19 @@ public class RabbitGLEvrntListener extends RabbitListener {
             case "start": {
                 // Handle clicks on start screen
                 if (isCatch(xClicked, yClicked, 50, 70, 8)) { // Play button
-                    gameState.setChooseMode();
+                    String playerName;
+                    do {
+                        playerName = JOptionPane.showInputDialog(null, "Enter your name:", "Player Name", JOptionPane.PLAIN_MESSAGE);
+
+                        if (playerName == null || playerName.trim().isEmpty()) {
+                            JOptionPane.showMessageDialog(null, "Name cannot be empty. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } while (playerName == null || playerName.trim().isEmpty());
+
+                    userModel = new UserModel(playerName.trim(), 0); // Save the player's name
+
+                    gameState.setChooseMode(); // Proceed to the next state
+
                 } else if (isCatch(xClicked, yClicked, 50, 50, 8)) { // Instructions button
                     gameState.setInstruction();
                 } else if (isCatch(xClicked, yClicked, 50, 30, 8)) { // Levels button
