@@ -684,25 +684,112 @@ public class RabbitGLEvrntListener extends RabbitListener {
                         playState.isPaused = false;
                         System.out.println("Resume");
                     }
-                    if ( collisionManger.isCollision(xClicked, yClicked, restart.x, restart.y, 8)) {
-                        playState.isPaused = false;
-                        score.user.lives = 7;
-                        score.user.score = 0;
-                        score2.user.lives = 7;
-                        score2.user.score = 0;
-                        playState.sTimer = System.currentTimeMillis();
-                      playState.setRestart();
-                        System.out.println("Restart");
-                        System.out.println(playState.gameSpeed - playState.levelUp);
+                    if (collisionManger.isCollision(xClicked, yClicked, restart.x, restart.y, 8)) {
+                        // Check if the userModel is available and has a valid username
+                        if (userModel != null && userModel.username != null && !userModel.username.trim().isEmpty()) {
+                            // Ask with player's name
+                            int choice = JOptionPane.showConfirmDialog(
+                                    null,
+                                    userModel.username + ", are you sure you want to restart the game?",
+                                    "Restart Confirmation",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE
+                            );
+
+                            if (choice == JOptionPane.YES_OPTION) {
+                                // Reset game state and restart
+                                playState.isPaused = false;
+                                score.user.lives = 7;
+                                score.user.score = 0;
+                                score2.user.lives = 7;
+                                score2.user.score = 0;
+                                playState.sTimer = System.currentTimeMillis();
+                                playState.setRestart();
+                                System.out.println("Game Restarted");
+                                System.out.println("Game Speed: " + (playState.gameSpeed - playState.levelUp));
+                            } else {
+                                System.out.println(userModel.username + " chose not to restart the game.");
+                            }
+                        } else {
+                            // Default confirmation if player name is not available
+                            int choice = JOptionPane.showConfirmDialog(
+                                    null,
+                                    "Are you sure you want to restart the game?",
+                                    "Restart Confirmation",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE
+                            );
+
+                            if (choice == JOptionPane.YES_OPTION) {
+                                // Reset game state and restart
+                                playState.isPaused = false;
+                                score.user.lives = 7;
+                                score.user.score = 0;
+                                score2.user.lives = 7;
+                                score2.user.score = 0;
+                                playState.sTimer = System.currentTimeMillis();
+                                playState.setRestart();
+                                System.out.println("Game Restarted");
+                                System.out.println("Game Speed: " + (playState.gameSpeed - playState.levelUp));
+                            } else {
+                                System.out.println("User chose not to restart the game.");
+                            }
+                        }
                     }
+
                     if ( collisionManger.isCollision(xClicked, yClicked, exit.x, exit.y, 8)) {
-                        gameState.setStart();
-                        playState.isPaused = false;
-                        score.user.lives = 7;
-                        score.user.score = 0;
-                        score2.user.lives = 7;
-                        score2.user.score = 0;
-                        System.out.println("Return to Start Screen");
+                        if (userModel != null && userModel.username != null && !userModel.username.trim().isEmpty()) {
+                        // Ask with player's name
+                        int choice = JOptionPane.showConfirmDialog(
+                                null,
+                                userModel.username + ", "+"Do you want to exit to the home page? ",
+                                "Exit Confirmation",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.QUESTION_MESSAGE
+                        );
+
+                        if (choice == JOptionPane.YES_OPTION) {
+                            // Reset game state and return to start screen
+                            gameState.setStart();
+                            playState.isPaused = false;
+
+                            // Reset scores and lives for the next game
+                            score.user.lives = 7;
+                            score.user.score = 0;
+                            score2.user.lives = 7;
+                            score2.user.score = 0;
+
+                            System.out.println("Returned to Start Screen");
+                        } else {
+                            System.out.println(userModel.username + " choose to stay in the game.");
+                        }
+                    }
+                        else {
+                        // Default confirmation if player name is not available
+                        int choice = JOptionPane.showConfirmDialog(
+                                null,
+                                "Do you want to exit to the home page?",
+                                "Exit Confirmation",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.QUESTION_MESSAGE
+                        );
+
+                        if (choice == JOptionPane.YES_OPTION) {
+                            // Reset game state and return to start screen
+                            gameState.setStart();
+                            playState.isPaused = false;
+
+                            // Reset scores and lives for the next game
+                            score.user.lives = 7;
+                            score.user.score = 0;
+                            score2.user.lives = 7;
+                            score2.user.score = 0;
+
+                            System.out.println("Returned to Start Screen");
+                        } else {
+                            System.out.println("User choose to stay in the game.");
+                        }
+                    }
                     }
                 } else {
                     if ( collisionManger.isCollision(xClicked, yClicked, pause.x, pause.y, 5)) {
