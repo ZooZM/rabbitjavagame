@@ -98,19 +98,18 @@ public class RabbitGLEvrntListener extends RabbitListener {
 //        gameState.setChooseMode();
         gameState.setStartPlay();
 
-        buttons = new ArrayList<ShapeModel>();
-        buttons.add(new ShapeModel(50,70,6));
-        buttons.add(new ShapeModel(50,50,15));
-        buttons.add(new ShapeModel(10,90,8));
-        buttons.add(new ShapeModel(50,30,33)); // menu
+        holes = new ArrayList<ShapeModel>();
+        holes.add(new ShapeModel(50,70,6));
+        holes.add(new ShapeModel(50,50,15));
+        holes.add(new ShapeModel(10,90,8));
+        holes.add(new ShapeModel(50,30,33)); // menu
 
-        buttons.add(new ShapeModel(50, 30, 12));
-        buttons.add(new ShapeModel(50, 70, 10));
-        buttons.add(new ShapeModel(50, 50, 11));
-        buttons.add(new ShapeModel(90,90,8));
-        buttons.add(new ShapeModel(90,90,13));
-        buttons.add(new ShapeModel(50,10,7));
-
+        holes.add(new ShapeModel(50, 30, 12));
+        holes.add(new ShapeModel(50, 70, 10));
+        holes.add(new ShapeModel(50, 50, 11));
+        holes.add(new ShapeModel(90,90,8));
+        holes.add(new ShapeModel(90,90,13));
+        holes.add(new ShapeModel(50,10,7));
 
         gameState.setStart();
 
@@ -177,8 +176,13 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 break;
 
             case "chooseNumberOfPlayers":
-
+                DrawBackground(gl, 5);
+                DrawImage(gl, 50, 50, 33, 1.4f, 1f);
+                DrawImage(gl, 50, 70, 33, 1.4f, 1f);
+                DrawImage(gl, 50, 30, 33, 1.4f, 1f);
+                DrawImage(gl, 90, 90, 33, 1f, 1f);
                 break;
+
 
             case "startPlay":
                 DrawBackground(gl, 26);
@@ -424,7 +428,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 }
 
                 if (isCatch(xClicked, yClicked, 50, 70, 8)) { // Play button
-                    gameState.setChooseMode();
+                    gameState.setChooseNumberOfPlayers();
                 } else if (isCatch(xClicked, yClicked, 50, 50, 8)) { // Instructions button
                     gameState.setInstruction();
                 } else if (isCatch(xClicked, yClicked, 50, 30, 8)) { // Levels button
@@ -549,6 +553,9 @@ public class RabbitGLEvrntListener extends RabbitListener {
         return (xclicked <= (x + r) && xclicked >= (x - r) && yclicked <= (y + r) && yclicked >= (y - r));
     }
 
+    boolean isCollision(int xclicked,int yclicked,int x, int y, int r){
+        return (xclicked<=(x+r)&&xclicked>=(x-r)&&yclicked<=(y+r)&&yclicked>=(y-r));
+    }
     @Override
     public void mousePressed(MouseEvent e) {
         if (!(playState.isLose || playState.isPaused)) {
@@ -740,4 +747,3 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
     }
 }
-
