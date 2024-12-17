@@ -690,7 +690,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
                     playState.setHardMode();
                     gameState.setStartPlay();
                     playState.sTimer = System.currentTimeMillis();
-                } else if ( collisionManger.isCollision(xClicked, yClicked, 90, 90, 5)) { // Back button
+                } else if ( collisionManger.isCollision(xClicked, yClicked, 90, 90, 5)) {
                     gameState.setStart();
                 }
             }
@@ -711,13 +711,30 @@ public class RabbitGLEvrntListener extends RabbitListener {
                         System.out.println(playState.gameSpeed - playState.levelUp);
                     }
                     if (collisionManger.isCollision(xClicked, yClicked, 50, 7, 8)) {
-                        gameState.setStart();
-                        playState.isPaused = false;
-                        score.user.lives = 7;
-                        score.user.score = 0;
-                        score2.user.lives = 7;
-                        score2.user.score = 0;
-                        System.out.println("Return to Start Screen");
+                        String exitMessage = (userModel != null && userModel.username != null && !userModel.username.trim().isEmpty())
+                                ? userModel.username + ", are you sure you want to exit to the home page?"
+                                : "Are you sure you want to exit to the home page?";
+
+                        int choice = JOptionPane.showConfirmDialog(
+                                null,
+                                exitMessage,
+                                "Exit Confirmation",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.QUESTION_MESSAGE
+                        );
+
+                        if (choice == JOptionPane.YES_OPTION) {
+                            gameState.setStart();
+                            playState.isPaused = false;
+                            score.user.lives = 7;
+                            score.user.score = 0;
+                            score2.user.lives = 7;
+                            score2.user.score = 0;
+
+                            System.out.println("Returned to Start Screen");
+                        } else {
+                            System.out.println("Player chose to stay in the game.");
+                        }
                     }
 
 
