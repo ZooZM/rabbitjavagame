@@ -68,7 +68,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
             "easy.png", "medium.png", "hard.png", "backbtn.png", "hammer3.png", "HowToPlay.png",
             "playAgain.png", "q.png", "w.png", "e.png", "a.png", "s.png", "d.png",
             "home.png", "restart.png", "resume.png", "Back1.png",
-            "Hamme2r.png", "Hamer3.png", "Hammer4.png", "gameOver.png", "puase.png", "ins.png",
+            "Hamme2r.png", "Hamer3.png", "Hammer4.png", "gameOver.png", "puase.png", "inst.jpg",
             "levels.png", "Back.png","Multi PLayer.JPG","Single PLayer.JPG","VS AI.JPG"};
 
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
@@ -163,6 +163,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
             break;
 
             case "instruction":
+                DrawBackground(gl, 32);
 
                 DrawImage(gl, 90, 90, 13, 1f, 1f);
 
