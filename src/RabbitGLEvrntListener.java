@@ -736,7 +736,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
                             // Ask with player's name
                             int choice = JOptionPane.showConfirmDialog(
                                     null,
-                                    userModel.username + ", are you sure you want to restart the game?",
+                                    "Your score will be removed "+userModel.username + ", are you sure you want to restart the game?",
                                     "Restart Confirmation",
                                     JOptionPane.YES_NO_OPTION,
                                     JOptionPane.QUESTION_MESSAGE
@@ -788,7 +788,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
                         // Ask with player's name
                         int choice = JOptionPane.showConfirmDialog(
                                 null,
-                                userModel.username + ", "+"Do you want to exit to the home page? ",
+                                "your score will be removed "+userModel.username + ", "+"Do you want to exit to the home page? ",
                                 "Exit Confirmation",
                                 JOptionPane.YES_NO_OPTION,
                                 JOptionPane.QUESTION_MESSAGE
