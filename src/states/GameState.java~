@@ -33,9 +33,6 @@ public class GameState {
     public void setChooseMode() {
         this.gameState = chooseMode;
     }
-    public void chooseModeFor2Players() {
-        this.gameState = chooseMode;
-    }
 
     public void setChooseNumberOfPlayers() {
         this.gameState = chooseNumberOfPlayers;

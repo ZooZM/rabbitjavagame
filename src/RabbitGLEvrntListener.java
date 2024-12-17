@@ -68,7 +68,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
             "playAgain.png", "q.png", "w.png", "e.png", "a.png", "s.png", "d.png",
             "home.png", "restart.png", "resume.png", "Back1.png",
             "Hamme2r.png", "Hamer3.png", "Hammer4.png", "gameOver.png", "puase.png", "ins.png",
-            "levels.png", "Back.png"};
+            "levels.png", "Back.png","Multi PLayer.JPG","Single PLayer.JPG","VS AI.JPG"};
 
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
     int[] textures = new int[textureNames.length];
@@ -119,10 +119,10 @@ public class RabbitGLEvrntListener extends RabbitListener {
         userModel2 = new UserModel("mm", 0);
         score = new ScoreModel(userModel, 0, 7);
         score2 = new ScoreModel(userModel2, 0, 7);
-        pause = new ShapeModel(92, 92, textureNames.length - 4);
+        pause = new ShapeModel(92, 92, 31);
         soundButton = new ShapeModel(90, 90, 8);
-        resume = new ShapeModel(50, 70, textureNames.length - 10);
-        restart = new ShapeModel(50, 50, textureNames.length - 11);
+        resume = new ShapeModel(50, 70, 25);
+        restart = new ShapeModel(50, 50, 24);
         exit = new ShapeModel(50, 30, 7);
 
         holes = new ArrayList<ShapeModel>();
@@ -177,12 +177,20 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
             case "chooseNumberOfPlayers":
                 DrawBackground(gl, 5);
-                DrawImage(gl, 50, 50, 33, 1.4f, 1f);
-                DrawImage(gl, 50, 70, 33, 1.4f, 1f);
-                DrawImage(gl, 50, 30, 33, 1.4f, 1f);
-                DrawImage(gl, 90, 90, 33, 1f, 1f);
+                DrawImage(gl, 50, 30, 35, 1.4f, 1f);
+                DrawImage(gl, 50, 70, 36, 1.4f, 1f);//single
+//                DrawImage(gl, 50, 30, 37, 1.4f, 1f);   //VS AI
+                DrawImage(gl, 90, 90, 13, 1f, 1f);
                 break;
 
+            case "chooseModeFor2Players":
+                DrawBackground(gl, 28);
+                DrawImage(gl, 50, 50, 11, 1.4f, 1f);
+                DrawImage(gl, 50, 70, 10, 1.4f, 1f);
+                DrawImage(gl, 50, 30, 12, 1.4f, 1f);
+                DrawImage(gl, 90, 90, 13, 1f, 1f);
+
+                break;
 
             case "startPlay":
                 DrawBackground(gl, 26);
@@ -190,13 +198,13 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 if (playState.isLose) {
                     if(playState.numOfPlayers == 1) {
 
-                        DrawImage(gl, 50, 60, textureNames.length - 5, 5f, 5f);
+                        DrawImage(gl, 50, 60, 30, 5f, 5f);
                         drawWord(gl, -0.18F, -0.3f, "High Score", (long) score.highScore);
                         DrawImage(gl, 50, 20, 16, 1f, 0.8f);
                         DrawImage(gl, 50, 7,  7, 1f, 0.8f);
                     }
                     else {
-                        DrawImage(gl, 50, 60, textureNames.length - 5, 5f, 5f);
+                        DrawImage(gl, 50, 60, textureNames.length - 8, 5f, 5f);
                         drawWord(gl, -0.18F, -0.3f, "High Score", (long) score.highScore);
                         // if multi
                         drawWord(gl, -0.18F, -0.4f, "High Score2", (long) score2.highScore);
@@ -409,6 +417,8 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+//        PlayState multiPlayerer =  new PlayState(2);
+
         double x = e.getX();
         double y = e.getY();
         Component c = e.getComponent();
@@ -448,6 +458,46 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
             case "chooseMode": {
 
+                if (isCatch(xClicked, yClicked, 50, 70, 8)) { // Easy mode
+                    playState.setEasyMode();
+                    gameState.setStartPlay();
+                    playState.sTimer = System.currentTimeMillis();
+                } else if (isCatch(xClicked, yClicked, 50, 50, 8)) { // Medium mode
+                    playState.setMediumMode();
+                    gameState.setStartPlay();
+                    playState.sTimer = System.currentTimeMillis();
+                } else if (isCatch(xClicked, yClicked, 50, 30, 8)) { // Hard mode
+                    playState.setHardMode();
+                    gameState.setStartPlay();
+                    playState.sTimer = System.currentTimeMillis();
+                } else if (isCatch(xClicked, yClicked, 90, 90, 5)) { // Back button
+                    gameState.setStart();
+                }
+            }
+            break;
+
+
+            case "chooseNumberOfPlayers": {
+
+//                if (isCatch(xClicked, yClicked, 50, 50, 5)) { // Multi Pl butt                    gameState.setStart();
+//                }
+
+                if (isCatch(xClicked, yClicked, 50, 70, 5)) { // single Pl butt
+                   playState= new PlayState(1);
+                    gameState.setChooseMode();
+                }
+                if (isCatch(xClicked, yClicked, 50, 30, 5)) { // Multi Pl butt
+                    playState =  new PlayState(2);
+
+                    gameState.chooseModeFor2Players();
+                }
+
+                if (isCatch(xClicked, yClicked, 90, 90, 5)) { // Back button
+                    gameState.setStart();
+                }
+            }
+            break;
+            case "chooseModeFor2Players": {
                 if (isCatch(xClicked, yClicked, 50, 70, 8)) { // Easy mode
                     playState.setEasyMode();
                     gameState.setStartPlay();
