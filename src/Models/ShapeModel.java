@@ -5,7 +5,7 @@ public class ShapeModel {
     public int y;
     public boolean hasRabbit;
     public boolean isBoom;
-    public int index;
+    public int  index;
     public ShapeModel(int x, int y, int index){
         this.x = x;
         this.y = y;

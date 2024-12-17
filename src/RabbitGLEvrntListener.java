@@ -116,8 +116,8 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
         playState = new PlayState(1);
         playState.setEasyMode();
-        userModel = new UserModel("as", 0);
-        userModel2 = new UserModel("mm", 0);
+        userModel = new UserModel(null, 0);
+        userModel2 = new UserModel(null, 0);
         score = new ScoreModel(userModel, 0, 7);
         score2 = new ScoreModel(userModel2, 0, 7);
         pause = new ShapeModel(92, 92, 31);
@@ -488,9 +488,32 @@ public class RabbitGLEvrntListener extends RabbitListener {
                     gameState.setChooseNumberOfPlayers();
                 } else if ( collisionManger.isCollision(xClicked, yClicked, 50, 50, 8)) { // Instructions button
                     gameState.setInstruction();
-                } else if ( collisionManger.isCollision(xClicked, yClicked, 50, 30, 8)) { // Levels button
-                    System.exit(0);
+                } else if (collisionManger.isCollision(xClicked, yClicked, 50, 30, 8)) {
+                    // Check if the userModel is available and has a valid username
+                    String message;
+                    if (userModel != null && userModel.username != null && !userModel.username.trim().isEmpty()) {
+                        message = userModel.username + ", are you sure you want to leave us ??";
+                    } else {
+                        message = "Are you sure you want to exit the game?";
+                    }
+
+                    // Show confirmation dialog
+                    int choice = JOptionPane.showConfirmDialog(
+                            null,
+                            message,
+                            "Exit Confirmation",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE
+                    );
+
+                    if (choice == JOptionPane.YES_OPTION) {
+                        System.out.println("Exiting the game...");
+                        System.exit(0); // Exit the game
+                    } else {
+                        System.out.println("Player chose to stay in the game.");
+                    }
                 }
+
             }
             break;
 
