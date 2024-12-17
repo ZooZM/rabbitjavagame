@@ -2,7 +2,7 @@ package Models;
 
 public class UserModel {
     public int score;
-    String username;
+    public String username;
     public int lives;
 
     public UserModel(String username, int score) {
@@ -10,6 +10,6 @@ public class UserModel {
         this.score = score;
     }
     public boolean isLose(){
-        return lives ==0;
+        return lives ==1;
     }
 }
