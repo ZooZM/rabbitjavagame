@@ -12,4 +12,8 @@ public class UserModel {
     public boolean isLose(){
         return lives ==1;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }

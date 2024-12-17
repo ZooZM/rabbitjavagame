@@ -528,12 +528,37 @@ public class RabbitGLEvrntListener extends RabbitListener {
 //                }
 
                 if ( collisionManger.isCollision(xClicked, yClicked, 50, 70, 5)) { // single Pl butt
-                   playState= new PlayState(1);
-                    gameState.setChooseMode();
+                    String playerName = null;
+                    boolean validInput = false;
+
+                    do {
+                        playerName = JOptionPane.showInputDialog(null, "Enter your name:", "Player Name", JOptionPane.PLAIN_MESSAGE);
+
+                        if (playerName != null && !playerName.trim().isEmpty()) {
+                            validInput = true;
+                            userModel.setUsername(playerName.trim());
+                            System.out.println(userModel.username);
+
+                            playState= new PlayState(1);
+                            gameState.setChooseMode();
+                        } else {
+                            int choice = JOptionPane.showConfirmDialog(
+                                    null,
+                                    "Name cannot be empty. Would you like to try again?",
+                                    "Error",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+
+                            if (choice == JOptionPane.NO_OPTION || choice == JOptionPane.CLOSED_OPTION) {
+                                break;
+                            }
+                        }
+                    } while (!validInput);
                 }
                 if ( collisionManger.isCollision(xClicked, yClicked, 50, 30, 5)) { // Multi Pl butt
                     playState =  new PlayState(2);
-                    score =new ScoreModel(new UserModel("das",0),0,7);
+                    score =new ScoreModel(new UserModel(userModel.username,0),0,7);
                     score2 = new ScoreModel(new UserModel("a",0),0,7);
                     gameState.chooseModeFor2Players();
                 }
