@@ -154,10 +154,9 @@ public class RabbitGLEvrntListener extends RabbitListener {
         switch (gameState.getGameState()) {
             case "start": {
 
-                DrawImage(gl, soundButton.x, soundButton.y, soundButton.index, 0.5f, 0.5f);
                 DrawImage(gl, 50, 70, 6, 1.5f, 1f);
                 DrawImage(gl, 50, 50, 15, 1.5f, 1f);
-                DrawImage(gl, 90, 90, 8, 1f, 1f);
+                DrawImage(gl, 90, 90, soundButton.index, 1f, 1f);
                 DrawImage(gl, 50, 30, exit.index, 1f, 1f);
             }
             break;
@@ -528,11 +527,11 @@ public class RabbitGLEvrntListener extends RabbitListener {
                 }
 
                 if ( collisionManger.isCollision(xClicked, yClicked, 50, 70, 8)) { // Play button
+
                     gameState.setChooseNumberOfPlayers();
                 } else if ( collisionManger.isCollision(xClicked, yClicked, 50, 50, 8)) { // Instructions button
                     gameState.setInstruction();
                 } else if (collisionManger.isCollision(xClicked, yClicked, 50, 30, 8)) {
-                    // Check if the userModel is available and has a valid username
                     String message;
                     if (userModel != null && userModel.username != null && !userModel.username.trim().isEmpty()) {
                         message = userModel.username + ", are you sure you want to leave us ??";
@@ -593,7 +592,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
 //                if (isCatch(xClicked, yClicked, 50, 50, 5)) { // Multi Pl butt                    gameState.setStart();
 //                }
 
-                if ( collisionManger.isCollision(xClicked, yClicked, 50, 70, 5)) { // single Pl butt
+                if ( collisionManger.isCollision(xClicked, yClicked, 50, 70, 10)) { // single Pl butt
                     String playerName = null;
                     boolean validInput = false;
 
@@ -622,7 +621,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
                         }
                     } while (!validInput);
                 }
-                if (collisionManger.isCollision(xClicked, yClicked, 50, 30, 5)) {
+                if (collisionManger.isCollision(xClicked, yClicked, 50, 30, 10)) {
                     String player1Name = null;
                     String player2Name = null;
                     boolean valid1Input = false;
@@ -744,6 +743,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
                         );
 
                         if (choice == JOptionPane.YES_OPTION) {
+                            // Reset game state and go to the start screen
                             gameState.setStart();
                             playState.isPaused = false;
                             score.user.lives = 7;
@@ -753,9 +753,12 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                             System.out.println("Returned to Start Screen");
                         } else {
-                            System.out.println("Player chose to stay in the game.");
+                            // Stay on the loss page
+                            System.out.println("Player chose to stay on the loss page.");
+                            playState.setLose(); // Ensure the loss state is maintained
                         }
                     }
+
 
 
                 } else if (playState.isPaused) {
