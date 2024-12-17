@@ -211,6 +211,13 @@ public class RabbitGLEvrntListener extends RabbitListener {
                     else {
                         DrawImage(gl, 50, 60, textureNames.length - 8, 5f, 5f);
 
+                        if (score2.user.isLose()) {
+                            drawWord(gl, -0.15F, -0.2f, "Player " + userModel2.username, "Losses");
+
+                        } else {
+                            drawWord(gl, -0.15F, -0.2f, "Player " + userModel.username, "Losses");
+                        }
+
                         drawWord(gl, 0.15F, -0.3f, "High score of "+score.user.username, (long) score.highScore);
                         drawWord(gl, 0.15F, -0.4f, "This round score of "+score.user.username, (long) score.user.score);
 
@@ -354,32 +361,45 @@ public class RabbitGLEvrntListener extends RabbitListener {
     //--------------------------------------------------Level Up--------------------------------------------------
 
     //--------------------------------------------------MultiPlayer--------------------------------------------------
-    void MultiPlayer(){
-//        LevelUp();
-        for(Models.ShapeModel hole:holes){
-            if(collisionManger.isCollision(xkey,ykey,hole.x,hole.y,6)&&hole.hasRabbit){
-                hole.isBoom =true;
+    void MultiPlayer() {
+
+        for (Models.ShapeModel hole : holes) {
+
+            if (collisionManger.isCollision(xkey, ykey, hole.x, hole.y, 6) && hole.hasRabbit) {
+                hole.isBoom = true;
                 hole.hasRabbit = false;
                 generateRabbit();
                 speed = 0;
                 score2.user.score++;
                 score2.setHighScore(score2.user.score);
-                System.out.println(xkey +" "+ykey);
+                System.out.println(xkey + " " + ykey);
                 System.out.println("Catch");
-                xkey=10;
-                ykey=50;
+                xkey = 10;
+                ykey = 50;
             }
+
             else if (collisionManger.isCollision(xkey, ykey, hole.x, hole.y, 6)) {
-                if(score2.user.isLose()){
+
+                if (score2.user.isLose()) {
+
+                    if (!score.user.isLose()) {
+                        System.out.println("Player 2 lost all lives. Player 1 wins!");
+                    } else {
+                        System.out.println("Both players lost all lives. It's a draw!");
+                    }
+
                     playState.setLose();
+                    break;
                 }
+
                 score2.itFall();
-                xkey=10;
-                ykey=50;
+                xkey = 10;
+                ykey = 50;
                 System.out.println("fall");
             }
         }
     }
+
     //--------------------------------------------------MultiPlayer--------------------------------------------------
     int previousNum = -1;
 
