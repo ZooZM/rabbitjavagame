@@ -556,12 +556,75 @@ public class RabbitGLEvrntListener extends RabbitListener {
                         }
                     } while (!validInput);
                 }
-                if ( collisionManger.isCollision(xClicked, yClicked, 50, 30, 5)) { // Multi Pl butt
-                    playState =  new PlayState(2);
-                    score =new ScoreModel(new UserModel(userModel.username,0),0,7);
-                    score2 = new ScoreModel(new UserModel("a",0),0,7);
-                    gameState.chooseModeFor2Players();
+                if (collisionManger.isCollision(xClicked, yClicked, 50, 30, 5)) {
+                    String player1Name = null;
+                    String player2Name = null;
+                    boolean valid1Input = false;
+                    boolean valid2Input = false;
+
+                    do {
+                        player1Name = JOptionPane.showInputDialog(null, "Enter Player 1's name:", "Player Name", JOptionPane.PLAIN_MESSAGE);
+
+                        if (player1Name != null && !player1Name.trim().isEmpty()) {
+                            valid1Input = true;
+                        } else {
+                            int choice = JOptionPane.showConfirmDialog(
+                                    null,
+                                    "Player 1's name cannot be empty. Would you like to try again?",
+                                    "Error",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+
+                            if (choice == JOptionPane.NO_OPTION || choice == JOptionPane.CLOSED_OPTION) {
+                                break;
+                            }
+                        }
+                    } while (!valid1Input);
+
+                    if (valid1Input) {
+                        do {
+                            player2Name = JOptionPane.showInputDialog(null, "Enter Player 2's name:", "Player Name", JOptionPane.PLAIN_MESSAGE);
+
+                            if (player2Name != null && !player2Name.trim().isEmpty()) {
+                                valid2Input = true;
+                            } else {
+                                int choice = JOptionPane.showConfirmDialog(
+                                        null,
+                                        "Player 2's name cannot be empty. Would you like to try again?",
+                                        "Error",
+                                        JOptionPane.YES_NO_OPTION,
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+
+                                if (choice == JOptionPane.NO_OPTION || choice == JOptionPane.CLOSED_OPTION) {
+                                    break;
+                                }
+                            }
+                        } while (!valid2Input);
+
+
+                        if (valid2Input) {
+                            userModel.setUsername(player1Name.trim());
+                            System.out.println("Player 1: " + userModel.username);
+
+                            UserModel player2Model = new UserModel(player2Name.trim(), 0);
+                            System.out.println("Player 2: " + player2Model.username);
+
+
+                            playState = new PlayState(2);
+                            score = new ScoreModel(new UserModel(player1Name.trim(), 0), 0, 7);
+                            score2 = new ScoreModel(new UserModel(player2Name.trim(), 0), 0, 7);
+
+                            gameState.chooseModeFor2Players();
+                        }
+                    }
+
+                    if (!valid1Input || !valid2Input) {
+                        System.out.println("Game did not start due to invalid input.");
+                    }
                 }
+
 
                 if ( collisionManger.isCollision(xClicked, yClicked, 90, 90, 5)) { // Back button
                     gameState.setStart();
