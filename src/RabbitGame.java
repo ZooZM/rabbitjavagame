@@ -6,6 +6,7 @@ import javax.media.opengl.GLCanvas;
 import javax.swing.JFrame;
 import java.awt.*;
 
+
 public class RabbitGame extends JFrame {
     RabbitListener listener = new RabbitGLEvrntListener();
 
@@ -14,6 +15,7 @@ public class RabbitGame extends JFrame {
     }
 
     public RabbitGame() {
+
         GLCanvas glcanvas = new GLCanvas();
         glcanvas.addGLEventListener(listener);
         glcanvas.addMouseListener(listener);

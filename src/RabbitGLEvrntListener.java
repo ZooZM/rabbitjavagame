@@ -769,11 +769,17 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                             System.out.println("Returned to Start Screen");
                         } else {
-                            // Stay on the loss page
+                            // Stay in the current loss state
                             System.out.println("Player chose to stay on the loss page.");
-                            playState.setLose(); // Ensure the loss state is maintained
+                            playState.setLose();
+                        }
+                    } else {
+                        // Ensure the game stays in the loss state if the exit button wasn't clicked
+                        if (playState.isPaused) {
+                            playState.setLose();
                         }
                     }
+
 
 
 
