@@ -204,14 +204,19 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                         DrawImage(gl, 50, 60, 30, 5f, 5f);
                         drawWord(gl, -0.18F, -0.3f, "High Score of "+score.user.username, (long) score.highScore);
+                        drawWord(gl, -0.18F, -0.4f, "This round score of "+score.user.username, (long) score.user.score);
                         DrawImage(gl, 50, 20, 16, 1f, 0.8f);
                         DrawImage(gl, 50, 7,  7, 1f, 0.8f);
                     }
                     else {
                         DrawImage(gl, 50, 60, textureNames.length - 8, 5f, 5f);
-                        drawWord(gl, -0.18F, -0.3f, "High Score of "+score.user.username, (long) score.highScore);
+
+                        drawWord(gl, 0.15F, -0.3f, "High score of "+score.user.username, (long) score.highScore);
+                        drawWord(gl, 0.15F, -0.4f, "This round score of "+score.user.username, (long) score.user.score);
+
                         // if multi
-                        drawWord(gl, -0.18F, -0.4f, "High Score2 of "+score2.user.username, (long) score2.highScore);
+                        drawWord(gl, -0.6F, -0.3f, "High score of "+score2.user.username, (long) score2.highScore);
+                        drawWord(gl, -0.6F, -0.4f, "This round score of "+score2.user.username, (long) score2.user.score);
                         //if multi
                         DrawImage(gl, 50, 20, 16, 1f, 0.8f);
                         DrawImage(gl, 50, 7,  7, 1f, 0.8f);
@@ -271,9 +276,11 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                         drawWord(gl, -0.9F, 0.9f, "Timer", elapsedTimeSeconds);
 
-                        drawWord(gl, -0.9F, 0.8f, "Score", (long) score.user.score);
+                        drawWord(gl, -0.9F, 0.8f, "Player", userModel.username);
 
-                        drawWord(gl, -0.9F, 0.7f, "Lives", (long) score.user.lives);
+                        drawWord(gl, -0.9F, 0.7f, "Score", (long) score.user.score);
+
+                        drawWord(gl, -0.9F, 0.6f, "Lives", (long) score.user.lives);
                     } else {
                         hammer.x = xMotion + 5;
                         hammer.y = yMotion + 1;
@@ -286,13 +293,17 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                         drawWord(gl, -0.9F, 0.9f, "Timer", elapsedTimeSeconds);
 
-                        drawWord(gl, 0.5F, 0.8f, "Score", (long) score.user.score);
+                        drawWord(gl, 0.4F, 0.8f, "Player 1", userModel.username);
 
-                        drawWord(gl, 0.5F, 0.7f, "Lives", (long) score.user.lives);
+                        drawWord(gl, 0.4F, 0.7f, "Score", (long) score.user.score);
 
-                        drawWord(gl, -0.9F, 0.8f, "Score2", (long) score2.user.score);
+                        drawWord(gl, 0.4F, 0.6f, "Lives", (long) score.user.lives);
 
-                        drawWord(gl, -0.9F, 0.7f, "Lives2", (long) score2.user.lives);
+                        drawWord(gl, -0.9F, 0.8f, "Player 2", userModel2.username);
+
+                        drawWord(gl, -0.9F, 0.7f, "Score2", (long) score2.user.score);
+
+                        drawWord(gl, -0.9F, 0.6f, "Lives2", (long) score2.user.lives);
 
 
                         //--------------------------------------------------MultiPlayer--------------------------------------------------
@@ -432,6 +443,18 @@ public class RabbitGLEvrntListener extends RabbitListener {
     }
 
     private void drawWord(GL gl, float x, float y, String word, Long var) {
+        gl.glRasterPos2f(x, y);
+        String livesString = word + ": " + var;
+        char[] var3 = livesString.toCharArray();
+        int var4 = var3.length;
+
+        for (int var5 = 0; var5 < var4; ++var5) {
+            char c = var3[var5];
+            glut.glutBitmapCharacter(8, c);
+        }
+
+    }
+    private void drawWord(GL gl, float x, float y, String word, String var) {
         gl.glRasterPos2f(x, y);
         String livesString = word + ": " + var;
         char[] var3 = livesString.toCharArray();
@@ -631,8 +654,8 @@ public class RabbitGLEvrntListener extends RabbitListener {
                             userModel.setUsername(player1Name.trim());
                             System.out.println("Player 1: " + userModel.username);
 
-                            UserModel player2Model = new UserModel(player2Name.trim(), 0);
-                            System.out.println("Player 2: " + player2Model.username);
+                            userModel2.setUsername(player2Name.trim());
+                            System.out.println("Player 2: " + userModel2.username);
 
 
                             playState = new PlayState(2);
@@ -901,6 +924,8 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        playSound(hammerSound);
+
         if (e.getKeyCode() == KeyEvent.VK_Q) {
             xkey = 20;
             ykey = 50;
