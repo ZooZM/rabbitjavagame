@@ -69,7 +69,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
             "playAgain.png", "q.png", "w.png", "e.png", "a.png", "s.png", "d.png",
             "home.png", "restart.png", "resume.png", "Back1.png",
             "Hamme2r.png", "Hamer3.png", "Hammer4.png", "gameOver.png", "puase.png", "inst.jpg",
-            "levels.png", "Back.png","Multi PLayer.JPG","Single PLayer.JPG","VS AI.JPG"};
+            "levels.png", "Back.png","Multi PLayer.JPG","Single PLayer.JPG","heart.png"};
 
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
     int[] textures = new int[textureNames.length];
@@ -269,7 +269,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
                         generateRabbit();
                     }
                     //--------------------------------------------------GenerateRabbitSpeed--------------------------------------------------
-
+                    int currentHearts = 7;
                     if (playState.numOfPlayers == 1) {
                         hammer.x = xMotion + 5;
                         hammer.y = yMotion + 1;
@@ -286,7 +286,13 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                         drawWord(gl, -0.9F, 0.7f, "Score", (long) score.user.score);
 
-                        drawWord(gl, -0.9F, 0.6f, "Lives", (long) score.user.lives);
+                        drawWord(gl, -0.9F, 0.6f, "Lives", "");
+//                        DrawImage(gl, 13,82,37, 0.2F, 0.2F);
+                        int x=3;
+                        for (int i = 0; i < score.user.lives; i++) {
+                            DrawImage(gl, 12+x,80,37, 0.2F, 0.2F);
+                            x+=3;
+                        }
                     } else {
                         hammer.x = xMotion + 5;
                         hammer.y = yMotion + 1;
@@ -303,13 +309,23 @@ public class RabbitGLEvrntListener extends RabbitListener {
 
                         drawWord(gl, 0.4F, 0.7f, "Score", (long) score.user.score);
 
-                        drawWord(gl, 0.4F, 0.6f, "Lives", (long) score.user.lives);
+                        drawWord(gl, 0.4F, 0.6f, "Lives", "");
+                        int x=3;
+                        for (int i = 0; i < score.user.lives; i++) {
+                            DrawImage(gl, 76+x,81,37, 0.2F, 0.2F);
+                            x+=3;
+                        }
 
                         drawWord(gl, -0.9F, 0.8f, "Player 2", userModel2.username);
 
                         drawWord(gl, -0.9F, 0.7f, "Score2", (long) score2.user.score);
 
-                        drawWord(gl, -0.9F, 0.6f, "Lives2", (long) score2.user.lives);
+                        drawWord(gl, -0.9F, 0.6f, "Lives2", "");
+                        int x2=3;
+                        for (int i = 0; i < score2.user.lives; i++) {
+                            DrawImage(gl, 12+x2,81,37, 0.2F, 0.2F);
+                            x2+=3;
+                        }
 
 
                         //--------------------------------------------------MultiPlayer--------------------------------------------------
@@ -513,7 +529,7 @@ public class RabbitGLEvrntListener extends RabbitListener {
         switch (gameState.getGameState()) {
             case "start": {
 
-                if ( collisionManger.isCollision(xClicked, yClicked, soundButton.x, soundButton.y, 5)) {
+                if ( collisionManger.isCollision(xClicked, yClicked, soundButton.x, soundButton.y, 6)) {
                     isSoundEnabled = !isSoundEnabled;
                     if (!isSoundEnabled) {
                         stopAllSounds();
